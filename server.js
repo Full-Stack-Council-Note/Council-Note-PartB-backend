@@ -8,24 +8,41 @@ const connectDatabase = require('./config/connection')
 
 connectDatabase()
 
+const corsOptions = {
+	origin: '*',
+	optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 //const errorHandler = require('./middleware/errorHandler')
 
 //const db = require('./config/connection');  needed?
 //const dotenv = require("dotenv");
 
 //dotenv.config();
-require('dotenv').config()
-
+//if (process.env.NODE_ENV !== 'production') {
+//	require('dotenv').config();
+//}
+require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+//app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
 app.use('/', express.static(path.join(__dirname, '/public')))
 //app.use(errorHandler)
 
-app.use('/', require('./routes/root')) // or home?
+//const apiRouter = require('./routes/api');
+//app.use('/api', apiRouter);
+app.get("/", (request, response) => {
+	response.json({
+		message:'Welcome to CouncilNote'
+	});
+});
+
+const AuthHome = require('./routes/AuthHome');
+app.use('/', AuthHome ); // or home? or login? or /auth?
 
 const NoticesRouter = require('./routes/Notices');
 app.use('/notices', NoticesRouter);
@@ -50,23 +67,23 @@ app.all('*', (req, res) => {
 
 
 // MongoDB connection
-//const url = process.env.MONGO_URL
-//mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+//const uri = process.env.MONGO_URI
+//mongoose.connect(uri || 'mongodb://127.0.0.1:27017/councilnote' { useNewUrlParser: true, useUnifiedTopology: true })
 //.then(() => app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`)))
 //.catch((error) => console.log(error.message)) 
 //mongoose.set('useFindAndModify', false)
 
 
-//mongoose.connect( process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/councilnote'
- //   { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect( process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/councilnote',
+   { useNewUrlParser: true, useUnifiedTopology: true });
 
-const connection = mongoose.connection;
-mongoose.connection.once('open', () => {
+const db = mongoose.connection;
+db.once('open', () => {
     console.log('Successfully Connected to MongoDB')
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+    //app.listen(PORT, () => console.log(`Server running on port ${PORT}`)) //or separate below?
 })
 
-mongoose.connection.on('error', err => {
+db.on('error', err => {
     console.log(err)
 })
 
@@ -75,11 +92,9 @@ mongoose.connection.on('error', err => {
 //});
 //re-arrange ./routes/items (below)?
 
-
-
-//app.listen(PORT, () => {
-//console.log(`Server is running on port: ${PORT}`);
-//});
+app.listen(PORT, () => {
+  console.log(`Server is running on port: ${PORT}`);
+});
 
 module.exports = {
     app,

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const UserProfile = require('../models/userprofile.model');
+const UserProfile = require('../models/userprofile.models');
+//const UserProfile = require('../models/userprofile.model');
 
 router.post('/add-userprofile', (req, res) => {
     const { title, content, status } = req.body;

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Notice = require('../models/notice.model');
+const Notice = require('../models/notice.models');
+//const Notice = require('../models/notice.model');
 
 router.post('/add-notice', (req, res) => {
     const { title, content, status } = req.body;

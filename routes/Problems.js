@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Problem = require('../models/problem.model');
+const Problem = require('../models/problem.models');
+//const Problem = require('../models/problem.model');
 
 router.post('/add-problem', (req, res) => {
     const { title, content, status } = req.body;
