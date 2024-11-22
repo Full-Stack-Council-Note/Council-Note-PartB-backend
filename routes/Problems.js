@@ -2,8 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Problem = require('../models/problem.models');
 //const Problem = require('../models/problem.model');
+const {
+    jwtInHeader, adminOnly
+} = require('../middleware/UserMiddleware')
+                                     //add async?
 
-router.post('/add-problem', (req, res) => {
+router.post('/add-problem', jwtInHeader, (req, res) => {
     const { title, content, status } = req.body;
 
     const newProblem = new Notice({
@@ -17,13 +21,19 @@ router.post('/add-problem', (req, res) => {
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
-router.get('/', (req, res) => {
+router.get('/', jwtInHeader, (req, res) => {
     Problem.find()
         .then(problems => res.json(problems))
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
-router.put('/update-problem/:id', (req, res) => {
+router.get('/:id', jwtInHeader, (req, res) => {
+    Problem.find()
+        .then(problem => res.json(problem))
+        .catch(err => res.status(400).json(`Error: ${err}`));
+});
+
+router.put('/update-problem/:id', jwtInHeader, (req, res) => {
     Problem.findById(req.params.id)
         .then(problem => {
             problem.title = req.body.title;
@@ -36,7 +46,7 @@ router.put('/update-problem/:id', (req, res) => {
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', jwtInHeader, (req, res) => {
     Problem.findByIdAndDelete(req.params.id)
         .then(() => res.json('Problem deleted.'))
         .catch(err => res.status(400).json(`Error: ${err}`));

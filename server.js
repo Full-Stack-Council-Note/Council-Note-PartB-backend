@@ -35,14 +35,17 @@ app.use('/', express.static(path.join(__dirname, '/public')))
 
 //const apiRouter = require('./routes/api');
 //app.use('/api', apiRouter);
-app.get("/", (request, response) => {
-	response.json({
+app.get("/", (req, res) => {
+	res.status(200).json({
 		message:'Welcome to CouncilNote'
 	});
 });
 
-const AuthHome = require('./routes/AuthHome');
-app.use('/', AuthHome ); // or home? or login? or /auth?
+//const AuthHome = require('./routes/AuthHome');
+//app.use('/', AuthHome ); // or home? or login? or /auth? or for Users? needed?
+
+const UsersRouter = require('./routes/Users');
+app.use('/users', UsersRouter);
 
 const NoticesRouter = require('./routes/Notices');
 app.use('/notices', NoticesRouter);
@@ -54,7 +57,14 @@ const UserProfilesRouter = require('./routes/UserProfiles');
 app.use('/userprofiles', UserProfilesRouter);
 
 //dotenv.config({ path: 'ENV_FILENAME' });
+app.use((error, req, res, next) => {
+    res.status(500).json({
+        msg: "Error occurred in the server",
+        error: error.message
+    });
+});
 
+//needed?
 app.all('*', (req, res) => {
     res.status(404)
     if (req.accepts('html')) {
@@ -64,7 +74,6 @@ app.all('*', (req, res) => {
     } else {
         res.type('txt').send('404 Not Found')
     }})
-
 
 // MongoDB connection
 //const uri = process.env.MONGO_URI

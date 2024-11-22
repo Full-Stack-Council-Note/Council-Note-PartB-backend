@@ -2,8 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Notice = require('../models/notice.models');
 //const Notice = require('../models/notice.model');
+const {
+    jwtInHeader, adminOnly
+} = require('../middleware/UserMiddleware')
+                                     //add async?
 
-router.post('/add-notice', (req, res) => {
+router.post('/add-notice', jwtInHeader, (req, res) => {
     const { title, content, status } = req.body;
 
     const newNotice = new Notice({
@@ -17,13 +21,19 @@ router.post('/add-notice', (req, res) => {
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
-router.get('/', (req, res) => {
+router.get('/', jwtInHeader, (req, res) => {
     Notice.find()
         .then(notices => res.json(notices))
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
-router.put('/update-notice/:id', (req, res) => {
+router.get('/:id', jwtInHeader, (req, res) => {
+    Notice.find()
+        .then(notice => res.json(notice))
+        .catch(err => res.status(400).json(`Error: ${err}`));
+});
+
+router.put('/update-notice/:id', jwtInHeader, (req, res) => {
     Notice.findById(req.params.id)
         .then(notice => {
             notice.title = req.body.title;
@@ -36,7 +46,7 @@ router.put('/update-notice/:id', (req, res) => {
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', jwtInHeader, (req, res) => {
     Notice.findByIdAndDelete(req.params.id)
         .then(() => res.json('Notice deleted.'))
         .catch(err => res.status(400).json(`Error: ${err}`));

@@ -6,7 +6,12 @@ const ProblemSchema = new Schema({
     ProblemTitle: { type: String, required: true, unique: true },
     ProblemDescription: { type: String, required: true },
     DateAdded: { type: Date, default: Date.now },
-    ImmediateProblem: {type: Boolean, required: true}, //Immediate Problem to be solved in next 24 hours? yes or no
+    UrgentProblem: {type: Boolean},
+    SoonProblem: {type: Boolean},
+    WorkcrewOnWay: {type: Boolean},
+    WorkcrewAtSite: {type: Boolean},
+    IsResolved: {type: Boolean},
+    Comment: { type: String }  //Immediate Problem to be solved in next 24 hours? yes or no
     //ImageUpload?
 });
 

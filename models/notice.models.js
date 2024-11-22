@@ -5,6 +5,7 @@ const NoticeSchema = new Schema({
     NoticeTitle: { type: String, required: true, unique: true},
     NoticeDescription: { type: String, required: true },
     DateAdded: { type: Date, default: Date.now },
+    Comment: { type: String }
     //ImageUpload? refer to Pet example?
 });
 

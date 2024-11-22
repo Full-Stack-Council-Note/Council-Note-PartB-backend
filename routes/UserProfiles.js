@@ -2,11 +2,15 @@ const express = require('express');
 const router = express.Router();
 const UserProfile = require('../models/userprofile.models');
 //const UserProfile = require('../models/userprofile.model');
-
-router.post('/add-userprofile', (req, res) => {
+const {
+    jwtInHeader, adminOnly
+} = require('../middleware/UserMiddleware')
+                                     //add async?
+router.post('/add-userprofile', jwtInHeader, (req, res) => {
     const { title, content, status } = req.body;
 
     const newUserProfile = new Notice({
+        //specify or define these?
         title,
         content,
         status: status || 'active',
@@ -17,15 +21,16 @@ router.post('/add-userprofile', (req, res) => {
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
-router.get('/', (req, res) => {
-    UserProfile.find()
-        .then(userprofiles => res.json(userprofiles))
+router.get('/:id', jwtInHeader, (req, res) => {
+    UserProfile.findById(req.params.id)
+        .then(userprofile => res.json(userprofile))
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
-router.put('/update-userprofile/:id', (req, res) => {
+router.put('/update-userprofile/:id', jwtInHeader, (req, res) => {
     UserProfile.findById(req.params.id)
         .then(userprofile => {
+            //specify or define these?
             userprofile.title = req.body.title;
             userprofile.content = req.body.content;
             userprofile.status = req.body.status || userprofile.status;
@@ -36,7 +41,7 @@ router.put('/update-userprofile/:id', (req, res) => {
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', jwtInHeader, (req, res) => {
     UserProfile.findByIdAndDelete(req.params.id)
         .then(() => res.json('UserProfile deleted.'))
         .catch(err => res.status(400).json(`Error: ${err}`));
