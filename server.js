@@ -2,18 +2,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 
-const connectDatabase = require('./config/connection')
+//const connectDatabase = require('./config/connection')
 
-connectDatabase()
+//connectDatabase()
 
-const corsOptions = {
-	origin: '*',
-	optionsSuccessStatus: 200
-};
+//const corsOptions = {
+//	origin: '*',
+//	optionsSuccessStatus: 200
+//};
 
-app.use(cors(corsOptions));
+
+//app.use(cors(corsOptions));
 //const errorHandler = require('./middleware/errorHandler')
 
 //const db = require('./config/connection');  needed?
@@ -26,9 +28,10 @@ app.use(cors(corsOptions));
 require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+                               // or http://localhost:5173/
 //app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(express.json());
 app.use('/', express.static(path.join(__dirname, '/public')))
 //app.use(errorHandler)
@@ -41,8 +44,9 @@ app.get("/", (req, res) => {
 	});
 });
 
-//const AuthHome = require('./routes/AuthHome');
-//app.use('/', AuthHome ); // or home? or login? or /auth? or for Users? needed?
+const AuthRouter = require('./routes/Auth');
+app.use('/auth', AuthRouter ); 
+// or home? or login? or /auth? or for Users? needed?
 
 const UsersRouter = require('./routes/Users');
 app.use('/users', UsersRouter);
@@ -53,8 +57,8 @@ app.use('/notices', NoticesRouter);
 const ProblemsRouter = require('./routes/Problems');
 app.use('/problems', ProblemsRouter);
 
-const UserProfilesRouter = require('./routes/UserProfiles');
-app.use('/userprofiles', UserProfilesRouter);
+//const UserProfilesRouter = require('./routes/UserProfiles');
+//app.use('/userprofiles', UserProfilesRouter);
 
 //dotenv.config({ path: 'ENV_FILENAME' });
 app.use((error, req, res, next) => {

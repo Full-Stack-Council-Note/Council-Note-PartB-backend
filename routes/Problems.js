@@ -1,55 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const Problem = require('../models/problem.models');
-//const Problem = require('../models/problem.model');
 const {
-    jwtInHeader, adminOnly
-} = require('../middleware/UserMiddleware')
-                                     //add async?
+    getAllProblems,
+    getProblemById,
+    addProblem,
+    updateProblem,
+    deleteProblem,
+    getProblemsByFilter,
+    addComment,
+    getCommentsByProblemId,
+    deleteComment
+} = require('../controllers/ProblemCtrl');
 
-router.post('/add-problem', jwtInHeader, (req, res) => {
-    const { title, content, status } = req.body;
+// Get all articles
+router.get('/', getAllProblems);
 
-    const newProblem = new Notice({
-        title,
-        content,
-        status: status || 'active',
-    });
+// Get a specific article by ID
+router.get('/:id', getProblemById);
 
-    newProblem.save()
-        .then(() => res.json('Problem added!'))
-        .catch(err => res.status(400).json(`Error: ${err}`));
-});
+// Create a new article
+router.post('/', addProblem);
 
-router.get('/', jwtInHeader, (req, res) => {
-    Problem.find()
-        .then(problems => res.json(problems))
-        .catch(err => res.status(400).json(`Error: ${err}`));
-});
+// Update an article
+router.put('/:id', updateProblem);
 
-router.get('/:id', jwtInHeader, (req, res) => {
-    Problem.find()
-        .then(problem => res.json(problem))
-        .catch(err => res.status(400).json(`Error: ${err}`));
-});
+// Delete an article
+router.delete('/:id', deleteProblem);
 
-router.put('/update-problem/:id', jwtInHeader, (req, res) => {
-    Problem.findById(req.params.id)
-        .then(problem => {
-            problem.title = req.body.title;
-            problem.content = req.body.content;
-            problem.status = req.body.status || problem.status;
-            problem.save()
-                .then(() => res.json('Problem updated!'))
-                .catch(err => res.status(400).json(`Error: ${err}`));
-        })
-        .catch(err => res.status(400).json(`Error: ${err}`));
-});
+//filterout with category
+router.get('/filter', getProblemsByFilter);
 
-router.delete('/:id', jwtInHeader, (req, res) => {
-    Problem.findByIdAndDelete(req.params.id)
-        .then(() => res.json('Problem deleted.'))
-        .catch(err => res.status(400).json(`Error: ${err}`));
-});
+router.post("/:problemId/comments",addComment );
+router.get("/:problemId/comments", getCommentsByProblemId);
+router.delete("/:problemId/comments/:commentId", deleteComment);
 
 module.exports = router;

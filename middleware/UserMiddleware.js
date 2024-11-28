@@ -1,18 +1,31 @@
-const jwt = require('jsonwebtoken')
-const { verifyUserJWT, decryptString } = require('../controllers/UserFunctions')
+const Users = require('../models/userModel');
+const jwt = require('jsonwebtoken');
 
-
-//middlware to check whether or not a jwt is present in the cookies
-const jwtInHeader = async (request, response, next) => {
+const auth = async (req, res, next) => {
     try {
-        let headerJwt = request.cookies.jwt
-        let newJwt = await verifyUserJWT(headerJwt)
-    
-        request.cookies.jwt = newJwt
-    
-        next()
-    } catch (err) {console.log(err)}
-    
+        const authHeader = req.header("Authorization");
+
+        // Check if the token exists
+        if (!authHeader) {
+            return res.status(400).json({ msg: "You are not authorized" });
+        }
+
+        // Extract the token by removing 'Bearer ' prefix
+        const token = authHeader.split(" ")[1];
+
+        // Verify the token
+        const decoded = jwt.verify(token, 'AAAA');
+        if (!decoded) {
+            return res.status(400).json({ msg: "Invalid token" });
+        }
+
+        const user = await Users.findOne({ _id: decoded.id });
+
+        req.user = user;
+        next();
+    } catch (err) {
+        return res.status(500).json({ msg: err.message });
+    }
 }
 
 //middleware to check whether or not the user is an admin
@@ -27,5 +40,5 @@ const adminOnly = async (request, response, next) => {
 }
 
 module.exports = {
-    jwtInHeader, adminOnly
+    auth, adminOnly
 }

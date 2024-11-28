@@ -1,55 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const Notice = require('../models/notice.models');
-//const Notice = require('../models/notice.model');
 const {
-    jwtInHeader, adminOnly
-} = require('../middleware/UserMiddleware')
-                                     //add async?
+    getAllNotices,
+    getNoticeById,
+    addNotice,
+    updateNotice,
+    deleteNotice,
+    getNoticesByFilter,
+    addComment,
+    getCommentsByNoticeId,
+    deleteComment
+} = require('../controllers/NoticeCtrl');
 
-router.post('/add-notice', jwtInHeader, (req, res) => {
-    const { title, content, status } = req.body;
+// Get all articles
+router.get('/', getAllNotices);
 
-    const newNotice = new Notice({
-        title,
-        content,
-        status: status || 'active',
-    });
+// Get a specific article by ID
+router.get('/:id', getNoticeById);
 
-    newNotice.save()
-        .then(() => res.json('Notice added!'))
-        .catch(err => res.status(400).json(`Error: ${err}`));
-});
+// Create a new article
+router.post('/', addNotice);
 
-router.get('/', jwtInHeader, (req, res) => {
-    Notice.find()
-        .then(notices => res.json(notices))
-        .catch(err => res.status(400).json(`Error: ${err}`));
-});
+// Update an article
+router.put('/:id', updateNotice);
 
-router.get('/:id', jwtInHeader, (req, res) => {
-    Notice.find()
-        .then(notice => res.json(notice))
-        .catch(err => res.status(400).json(`Error: ${err}`));
-});
+// Delete an article
+router.delete('/:id', deleteNotice);
 
-router.put('/update-notice/:id', jwtInHeader, (req, res) => {
-    Notice.findById(req.params.id)
-        .then(notice => {
-            notice.title = req.body.title;
-            notice.content = req.body.content;
-            notice.status = req.body.status || notice.status;
-            notice.save()
-                .then(() => res.json('Notice updated!'))
-                .catch(err => res.status(400).json(`Error: ${err}`));
-        })
-        .catch(err => res.status(400).json(`Error: ${err}`));
-});
+//filterout with category
+router.get('/filter', getNoticesByFilter);
 
-router.delete('/:id', jwtInHeader, (req, res) => {
-    Notice.findByIdAndDelete(req.params.id)
-        .then(() => res.json('Notice deleted.'))
-        .catch(err => res.status(400).json(`Error: ${err}`));
-});
+router.post("/:problemId/comments",addComment );
+router.get("/:problemId/comments", getCommentsByNoticeId);
+router.delete("/:problemId/comments/:commentId", deleteComment);
 
 module.exports = router;
