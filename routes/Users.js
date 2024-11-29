@@ -8,6 +8,7 @@ const {
     UpdateNoticesList,
     deleteProblem,
     deleteNotice,
+    deleteUser
 
 } = require('../controllers/UserCtrl');
 //const userCtrl = require('../controllers/UserCtrl');
@@ -22,5 +23,7 @@ router.patch("/user/:id/UpdateProblemsList", auth, adminOnly, UpdateProblemsList
 router.patch("/user/:id/UpdateNoticesList", auth, adminOnly, UpdateNoticesList);
 router.delete("user/:id/deleteProblem", auth, adminOnly, deleteProblem);
 router.delete("user/:id/deleteNotice", auth, adminOnly, deleteNotice);
+router.delete("user/:id/deleteUser", auth, adminOnly, deleteUser);
+
       //or patch
 module.exports = router;

@@ -155,8 +155,15 @@ const deleteNotice = async (req, res) => {
             return res.status(500).json({ msg: "processing error occurred" });
         }
 };
-
-
+const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (user) res.json({ message: "user deleted" });
+        else res.status(404).json({ message: "user not found" });
+    } catch (err) {
+        res.status(500).json({ message: "processing error occurred" });
+    }
+};
 
 //router.delete('/:id', auth, (req, res) => {
 //    Problem.findByIdAndDelete(req.params.id)
@@ -172,4 +179,5 @@ module.exports = {
     UpdateNoticesList,
     deleteProblem,
     deleteNotice,
+    deleteUser
 };

@@ -103,7 +103,7 @@ db.on('error', err => {
 //connection.once('open', () => {
    // console.log('MongoDB database connection established successfully');
 //});
-//re-arrange ./routes/items (below)?
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);

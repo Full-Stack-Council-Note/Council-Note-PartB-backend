@@ -34,6 +34,7 @@ const getNoticeById = async (req, res) => {
 // Add a Notice Post
 const addNotice = async (req, res) => {
     const { NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto} = req.body;
+    const file = req.file;
                                        //or User?
     if (!mongoose.Types.ObjectId.isValid(fullname)) {
         return res.status(400).json({ message: "Invalid User ID" });
@@ -45,8 +46,16 @@ const addNotice = async (req, res) => {
         if (!existingUser) {
             return res.status(400).json({ message: "User not found" });
         }
+        const file = req.file;
 
-        const noticePost = new Notice({  NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto });
+        // this bit needed? ! needed? Check if file exists
+        //        if (!file) {
+        //    return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
+        //}
+        if (file) {
+          return res.status(400).json({ message: 'Feel free to upload a photo for this notice' });
+        }
+        const noticePost = new Notice({  NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto: {filename: file.filename, data: file.buffer, contentType: file.mimetype,} });
         const newNoticePost = await noticePost.save();
         res.status(201).json(newNoticePost);
     } catch (err) {
@@ -57,6 +66,7 @@ const addNotice = async (req, res) => {
 // Update a Notice Post
 const updateNotice = async (req, res) => {
     const { NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto } = req.body;
+    const file = req.file;
 
     try {
         const noticePost = await Notice.findByIdAndUpdate(
@@ -67,8 +77,14 @@ const updateNotice = async (req, res) => {
 
         if (noticePost) res.json(noticePost);
         else res.status(404).json({ message: "Notice post not found" });
+        if (file) {
+            noticePost.NoticePhoto = {
+              data: file.buffer,
+              contentType: file.mimetype,
+            };
+          }
     } catch (err) {
-        res.status(400).json({ message: "processing error occurred" });
+        res.status(400).json({ message: "error occurred updating notice post" });
     }
 };
 

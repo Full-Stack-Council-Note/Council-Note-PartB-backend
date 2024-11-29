@@ -45,18 +45,27 @@ const addProblem = async (req, res) => {
         if (!existingUser) {
             return res.status(400).json({ message: "User not found" });
         }
+        const file = req.file;
 
-        const problemPost = new Problem({  ProblemTitle, ProblemDescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, ProblemPhoto });
+        // this bit needed? ! needed? Check if file exists
+        //        if (!file) {
+        //    return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
+        //}
+        if (file) {
+          return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
+        }
+        const problemPost = new Problem({  ProblemTitle, ProblemDescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, ProblemPhoto: {filename: file.filename, data: file.buffer, contentType: file.mimetype,} });
         const newproblemPost = await problemPost.save();
         res.status(201).json(newproblemPost);
     } catch (err) {
-        res.status(400).json({ message: "processing error occurred" });
+        res.status(400).json({ message: "error occurred adding problem post" });
     }
 };
 
 // Update a Problem Post
 const updateProblem = async (req, res) => {
     const { ProblemTitle, ProblemDescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, ProblemPhoto } = req.body;
+    const file = req.file;
 
     try {
         const problemPost = await Problem.findByIdAndUpdate(
@@ -67,9 +76,16 @@ const updateProblem = async (req, res) => {
 
         if (problemPost) res.json(problemPost);
         else res.status(404).json({ message: "Problem post not found" });
+        if (file) {
+            problemPost.ProblemPhoto = {
+              data: file.buffer,
+              contentType: file.mimetype,
+            };
+          }
     } catch (err) {
-        res.status(400).json({ message: "processing error occurred" });
+        res.status(400).json({ message: "error occurred updating problem post" });
     }
+
 };
 
 // Delete a Problem Post
