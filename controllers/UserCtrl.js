@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const Problem = require("../models/problemModel");
 const Notice = require("../models/noticeModel");
-//const auth = require('../middleware/UserMiddleware');
+
 
     //needed?
 const searchUser = async (req, res) => {

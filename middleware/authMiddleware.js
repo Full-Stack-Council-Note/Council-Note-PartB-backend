@@ -1,4 +1,4 @@
-const Users = require('../models/userModel');
+const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
 const auth = async (req, res, next) => {
@@ -19,7 +19,7 @@ const auth = async (req, res, next) => {
             return res.status(400).json({ msg: "Invalid token" });
         }
 
-        const user = await Users.findOne({ _id: decoded.id });
+        const user = await User.findOne({ _id: decoded.id });
 
         req.user = user;
         next();

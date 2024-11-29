@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {auth, adminOnly} = require('../middleware/authMiddleware');
 const {
     getAllProblems,
     getProblemById,
@@ -13,25 +14,25 @@ const {
 } = require('../controllers/ProblemCtrl');
 
 // Get all articles
-router.get('/', getAllProblems);
+router.get('/', auth, adminOnly, getAllProblems);
 
 // Get a specific article by ID
-router.get('/:id', getProblemById);
+router.get('/:id', auth, adminOnly, getProblemById);
 
 // Create a new article
-router.post('/', addProblem);
+router.post('/', auth, adminOnly, addProblem);
 
 // Update an article
-router.put('/:id', updateProblem);
+router.put('/:id', auth, adminOnly, updateProblem);
 
 // Delete an article
-router.delete('/:id', deleteProblem);
+router.delete('/:id', auth, adminOnly, deleteProblem);
 
 //filterout with category
-router.get('/filter', getProblemsByFilter);
+router.get('/filter', auth, adminOnly, getProblemsByFilter);
 
-router.post("/:problemId/comments",addComment );
-router.get("/:problemId/comments", getCommentsByProblemId);
-router.delete("/:problemId/comments/:commentId", deleteComment);
+router.post("/:problemId/comments", auth, adminOnly, addComment );
+router.get("/:problemId/comments", auth, adminOnly, getCommentsByProblemId);
+router.delete("/:problemId/comments/:commentId", auth, adminOnly, deleteComment);
 
 module.exports = router;

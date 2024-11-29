@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {auth, adminOnly} = require('../middleware/authMiddleware');
 const {
     getAllNotices,
     getNoticeById,
@@ -13,25 +14,25 @@ const {
 } = require('../controllers/NoticeCtrl');
 
 // Get all articles
-router.get('/', getAllNotices);
+router.get('/', auth, adminOnly, getAllNotices);
 
 // Get a specific article by ID
-router.get('/:id', getNoticeById);
+router.get('/:id', auth, adminOnly, getNoticeById);
 
 // Create a new article
-router.post('/', addNotice);
+router.post('/', auth, adminOnly, addNotice);
 
 // Update an article
-router.put('/:id', updateNotice);
+router.put('/:id', auth, adminOnly, updateNotice);
 
 // Delete an article
-router.delete('/:id', deleteNotice);
+router.delete('/:id', auth, adminOnly, deleteNotice);
 
 //filterout with category
-router.get('/filter', getNoticesByFilter);
+router.get('/filter', auth, adminOnly, getNoticesByFilter);
 
-router.post("/:problemId/comments",addComment );
-router.get("/:problemId/comments", getCommentsByNoticeId);
-router.delete("/:problemId/comments/:commentId", deleteComment);
+router.post("/:problemId/comments", auth, adminOnly, addComment );
+router.get("/:problemId/comments", auth, adminOnly, getCommentsByNoticeId);
+router.delete("/:problemId/comments/:commentId", auth, adminOnly, deleteComment);
 
 module.exports = router;
