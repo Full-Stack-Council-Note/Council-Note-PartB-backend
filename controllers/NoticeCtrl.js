@@ -23,7 +23,7 @@ const getAllNotices = async (req, res) => {
 // Get a specific Notice post by ID
 const getNoticeById = async (req, res) => {
     try {
-        const noticePost = await Notice.findById(req.params.id).populate("AddedBy", "-password");
+        const noticePost = await Notice.findById(req.params.noticeId).populate("AddedBy", "-password");
         if (noticePost) res.json(noticePost);
         else res.status(404).json({ message: "Problem post not found" });
     } catch (err) {
@@ -70,7 +70,7 @@ const updateNotice = async (req, res) => {
 
     try {
         const noticePost = await Notice.findByIdAndUpdate(
-            req.params.id,
+            req.params.noticeId,
             { NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto },
             { new: true }
         ).populate("AddedBy", "-password");
@@ -91,7 +91,7 @@ const updateNotice = async (req, res) => {
 // Delete a Notice Post
 const deleteNotice = async (req, res) => {
     try {
-        const noticePost = await Notice.findByIdAndDelete(req.params.id);
+        const noticePost = await Notice.findByIdAndDelete(req.params.noticeId);
         if (noticePost) res.json({ message: "Notice deleted" });
         else res.status(404).json({ message: "Notice post not found" });
     } catch (err) {

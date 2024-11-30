@@ -11,7 +11,8 @@ const ProblemSchema = new Schema({
     // ProblemTitle: String,
     ProblemTitle: { type: String, required: true, unique: true },
     ProblemDescription: { type: String, required: true },
-    AddedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+                                            // turn back on , required: true   (for below)
+    AddedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     DateAdded: { type: Date, default: Date.now },
     UrgentOrSoon: {type: Boolean},
     IsResolved: {type: Boolean},

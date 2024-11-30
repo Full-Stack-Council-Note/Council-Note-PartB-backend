@@ -17,16 +17,18 @@ const {
 router.get('/', auth, adminOnly, getAllProblems);
 
 // Get a specific article by ID
-router.get('/:id', auth, adminOnly, getProblemById);
+//add back in auth, adminOnly,
+router.get('/:problemId/', getProblemById);
 
 // Create a new article
-router.post('/', auth, adminOnly, addProblem);
+//add back in auth, adminOnly,
+router.post('/', addProblem);
 
 // Update an article
-router.put('/:id', auth, adminOnly, updateProblem);
+router.put('/:problemId/', auth, adminOnly, updateProblem);
 
 // Delete an article
-router.delete('/:id', auth, adminOnly, deleteProblem);
+router.delete('/:problemId/', auth, adminOnly, deleteProblem);
 
 //filterout with category
 router.get('/filter', auth, adminOnly, getProblemsByFilter);

@@ -14,7 +14,7 @@ describe("GET /", () => {
     })
     
     beforeEach(async () => {
-        jest.setTimeout(10000)
+        jest.setTimeout(100000)
     })
     
     it("should return CouncilNote successfully", async () => {

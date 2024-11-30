@@ -23,7 +23,8 @@ const getAllProblems = async (req, res) => {
 // Get a specific Problem post by ID
 const getProblemById = async (req, res) => {
     try {
-        const problemPost = await Problem.findById(req.params.id).populate("AddedBy", "-password");
+                                                    //or :problemId  ?
+        const problemPost = await Problem.findById(req.params.problemId).populate("AddedBy", "-password");
         if (problemPost) res.json(problemPost);
         else res.status(404).json({ message: "Problem post not found" });
     } catch (err) {
@@ -35,16 +36,16 @@ const getProblemById = async (req, res) => {
 const addProblem = async (req, res) => {
     const { ProblemTitle, ProblemDescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, ProblemPhoto} = req.body;
                                        //or User?
-    if (!mongoose.Types.ObjectId.isValid(fullname)) {
-        return res.status(400).json({ message: "Invalid User ID" });
-    }
+   // if (!mongoose.Types.ObjectId.isValid(fullname)) {
+    //    return res.status(400).json({ message: "Invalid User ID" });
+   // }
 
     try {
         //needed?
-        const existingUser = await User.findById(fullname);
-        if (!existingUser) {
-            return res.status(400).json({ message: "User not found" });
-        }
+        //const existingUser = await User.findById(fullname);
+        //if (!existingUser) {
+        //    return res.status(400).json({ message: "User not found" });
+        //}
         const file = req.file;
 
         // this bit needed? ! needed? Check if file exists
@@ -69,7 +70,7 @@ const updateProblem = async (req, res) => {
 
     try {
         const problemPost = await Problem.findByIdAndUpdate(
-            req.params.id,
+            req.params.problemId,
             { ProblemTitle, ProblemDescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, ProblemPhoto },
             { new: true }
         ).populate("AddedBy", "-password");
@@ -91,7 +92,8 @@ const updateProblem = async (req, res) => {
 // Delete a Problem Post
 const deleteProblem = async (req, res) => {
     try {
-        const problemPost = await Problem.findByIdAndDelete(req.params.id);
+                                                           //or :problemId  ?
+        const problemPost = await Problem.findByIdAndDelete(req.params.problemId);
         if (problemPost) res.json({ message: "Problem deleted" });
         else res.status(404).json({ message: "Problem post not found" });
     } catch (err) {

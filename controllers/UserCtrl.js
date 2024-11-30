@@ -20,7 +20,7 @@ const searchUser = async (req, res) => {
 
 const getUser = async (req, res) => {
         try {
-            const user = await User.findById(req.params.id)
+            const user = await User.findById(req.params.userId)
                 .select("-password")
                 .populate("-password");
                           //number of posts or list of their posts
@@ -43,7 +43,9 @@ const updateUser = async (req, res) => {
             }
 
             await User.findOneAndUpdate(
-                { _id: req.user._id },
+                //{ _id: req.user._id },
+                //{ userId: req.user.userId },
+                { _id: req.user.userId },
                 { fullname, about, profilephoto, ProblemsList, NoticesList }
                 //and PostsList or NumberofPosts
             );
@@ -57,13 +59,14 @@ const updateUser = async (req, res) => {
 const UpdateProblemsList = async (req, res) => {
         try {
             const problem = await Problem.find({
-                _id: req.params.id,
+                _id: req.params.problemId,
+                //problemslist: req.problem._id, PLid, NLid
                 problemslist: req.problem._id,
             });
 
             res.json({ problem });
             const newProblem = await Problem.findOneAndUpdate(
-                { _id: req.params.id },
+                { _id: req.params.problemId },
                 {
                     $push: {
                         problemslist: req.problem._id,
@@ -73,8 +76,8 @@ const UpdateProblemsList = async (req, res) => {
             ).populate("problemslist");
 
             await Problem.findOneAndUpdate(
-                { _id: req.problem._id },
-                { $push: { problemslist: req.params.id } },
+                { _id: req.problem.problemId },
+                { $push: { problemslist: req.params._id} },
                 { new: true }
             );
 
@@ -86,13 +89,13 @@ const UpdateProblemsList = async (req, res) => {
 const UpdateNoticesList = async (req, res) => {
         try {
             const notice = await Notice.find({
-                _id: req.params.id,
+                _id: req.params.noticeId,
                 noticeslist: req.notice._id,
             });
 
             res.json({ notice });
             const newNotice = await Notice.findOneAndUpdate(
-                { _id: req.params.id },
+                { _id: req.params.noticeId },
                 {
                     $push: {
                         noticeslist: req.notice._id,
@@ -102,8 +105,8 @@ const UpdateNoticesList = async (req, res) => {
             ).populate("noticeslist");
 
             await Notice.findOneAndUpdate(
-                { _id: req.notice._id },
-                { $push: { noticeslist: req.params.id } },
+                { _id: req.notice.noticeId },
+                { $push: { noticeslist: req.params._id } },
                 { new: true }
             );
 
@@ -116,7 +119,7 @@ const UpdateNoticesList = async (req, res) => {
 const deleteProblem = async (req, res) => {
         try {
             const updatedProblemsList = await Problem.findOneAndUpdate(
-                { _id: req.params.id },
+                { _id: req.params.problemId },
                 {
                     $pull: { problemslist: req.problem._id },
                 },
@@ -125,7 +128,7 @@ const deleteProblem = async (req, res) => {
 
             await Problem.findOneAndUpdate(
                 { _id: req.problem._id },
-                { $pull: { problemslist: req.params.id } },
+                { $pull: { problemslist: req.params._id } },
                 { new: true }
             );
 
@@ -137,16 +140,16 @@ const deleteProblem = async (req, res) => {
 const deleteNotice = async (req, res) => {
         try {
             const updatedNoticesList = await Notice.findOneAndUpdate(
-                { _id: req.params.id },
+                { _id: req.params.noticeId },
                 {
                     $pull: { noticeslist: req.notice._id },
                 },
                 { new: true }
             ).populate("noticeslist");
-
-            await Problem.findOneAndUpdate(
-                { _id: req.notice._id },
-                { $pull: { noticeslist: req.params.id } },
+           
+            await Notice.findOneAndUpdate(
+                { _id: req.notice.noticeId },
+                { $pull: { noticeslist: req.params._id} },
                 { new: true }
             );
 
@@ -157,7 +160,7 @@ const deleteNotice = async (req, res) => {
 };
 const deleteUser = async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
+        const user = await User.findByIdAndDelete(req.params.userId);
         if (user) res.json({ message: "user deleted" });
         else res.status(404).json({ message: "user not found" });
     } catch (err) {
