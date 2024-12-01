@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const CommentSchema = new mongoose.Schema({
+const ProblemCommentSchema = new mongoose.Schema({
     content: { type: String, required: true },
     AddedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     DateAdded: { type: Date, default: Date.now },
 });
+
+const ProblemComment = mongoose.model('ProblemComment', ProblemCommentSchema);
 
 const ProblemSchema = new Schema({
     // ProblemTitle: String,
@@ -22,7 +24,7 @@ const ProblemSchema = new Schema({
         filename: String,
  
     },
-    comments: [CommentSchema],  //Immediate Problem to be solved in next 24 hours? yes or no
+    comments: [ProblemCommentSchema],  //Immediate Problem to be solved in next 24 hours? yes or no
     //ImageUpload?
     // UrgentProblem: {type: Boolean},
    // SoonProblem: {type: Boolean},
@@ -32,4 +34,4 @@ const ProblemSchema = new Schema({
 
 const Problem = mongoose.model('Problem', ProblemSchema);
 
-module.exports = Problem;
+module.exports = {Problem, ProblemComment}

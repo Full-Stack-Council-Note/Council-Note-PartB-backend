@@ -15,15 +15,15 @@ const {
 
 router.get('/searchUser', auth, adminOnly, searchUser);
 
-router.get('/:userId/', auth, adminOnly, getUser);
+router.get('/:id/', auth, adminOnly, getUser);
 
-router.patch("/:userId/", auth, adminOnly, updateUser);
+router.patch("/:id/", auth, adminOnly, updateUser);
 
-router.patch("/:userId/UpdateProblemsList", auth, adminOnly, UpdateProblemsList);
-router.patch("/:userId/UpdateNoticesList", auth, adminOnly, UpdateNoticesList);
-router.delete("/:userId/deleteProblem", auth, adminOnly, deleteProblem);
-router.delete("/:userId/deleteNotice", auth, adminOnly, deleteNotice);
-router.delete("/:userId/deleteUser", auth, adminOnly, deleteUser);
+router.patch("/:id/UpdateProblemsList", auth, adminOnly, UpdateProblemsList);
+router.patch("/:id/UpdateNoticesList", auth, adminOnly, UpdateNoticesList);
+router.delete("/:id/deleteProblem", auth, adminOnly, deleteProblem);
+router.delete("/:id/deleteNotice", auth, adminOnly, deleteNotice);
+router.delete("/:id/deleteUser", auth, adminOnly, deleteUser);
 
       //or patch
 module.exports = router;

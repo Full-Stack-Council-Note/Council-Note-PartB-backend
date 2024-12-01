@@ -1,4 +1,4 @@
-const User = require("../models/userModel");
+const Users = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -7,22 +7,9 @@ const authCtrl = {
         try {
             const { fullname, email, password, } = req.body;
 
-            const user_email = await User.findOne({ email });
-            if (user_email) {
-                return res
-                    .status(400)
-                    .json({ msg: "This email is already registered." });
-            }
-
-            if (password.length < 6) {
-                return res
-                    .status(400)
-                    .json({ msg: "Password must be at least 6 characters long." });
-            }
-
             const passwordHash = await bcrypt.hash(password, 12);
 
-            const newUser = new User({
+            const newUser = new Users({
                 fullname,
                 email,
                 password: passwordHash,
@@ -49,6 +36,18 @@ const authCtrl = {
             await newUser.save();
 
             res.json({ msg: "registered" });
+            const user_email = await Users.findOne({ email });
+            if (user_email) {
+                return res
+                    .status(400)
+                    .json({ msg: "This email is already registered." });
+            }
+
+            if (password.length < 6) {
+                return res
+                    .status(400)
+                    .json({ msg: "Password must be at least 6 characters long." });
+            }
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
@@ -58,7 +57,7 @@ const authCtrl = {
         try {
             const { oldPassword, newPassword } = req.body;
 
-            const user = await User.findOne({ _id: req.user._id });
+            const user = await Users.findOne({ _id: req.user._id });
 
             const isMatch = await bcrypt.compare(oldPassword, user.password);
             if (!isMatch) {
@@ -73,7 +72,7 @@ const authCtrl = {
 
             const newPasswordHash = await bcrypt.hash(newPassword, 12);
 
-            await User.findOneAndUpdate({ _id: req.user._id }, { password: newPasswordHash });
+            await Users.findOneAndUpdate({ _id: req.user._id }, { password: newPasswordHash });
 
             res.json({ msg: "Password updated successfully." })
 
@@ -86,7 +85,7 @@ const authCtrl = {
         try {
             const { fullname, email, password } = req.body;
 
-            const user_email = await User.findOne({ email });
+            const user_email = await Users.findOne({ email });
             if (user_email) {
                 return res
                     .status(400)
@@ -101,7 +100,7 @@ const authCtrl = {
 
             const passwordHash = await bcrypt.hash(password, 12);
 
-            const newUser = new User({
+            const newUser = new Users({
                 fullname,
                 email,
                 password: passwordHash,
@@ -120,7 +119,7 @@ const authCtrl = {
         try {
             const { email, password } = req.body;
 
-            const user = await User.findOne({ email, role: "user" }).populate(
+            const user = await Users.findOne({ email, role: "user" }).populate(
                 "problemslist noticeslist",
                 "-password"
             );
@@ -161,7 +160,7 @@ const authCtrl = {
         try {
             const { email, password } = req.body;
             console.log("fd", password);
-            const user = await User.findOne({ email, role: "admin" });
+            const user = await Users.findOne({ email, role: "admin" });
             console.log("user", user)
             if (!user) {
                 return res.status(400).json({ msg: "Email or Password is incorrect." });
@@ -218,7 +217,7 @@ const authCtrl = {
                         return res.status(400).json({ msg: "Please login again." });
                     }
 
-                    const user = await User.findById(result.id)
+                    const user = await Users.findById(result._id)
                         .select("-password")
                         .populate("problemslist noticeslist", "-password");
 
@@ -226,7 +225,7 @@ const authCtrl = {
                         return res.status(400).json({ msg: "User does not exist." });
                     }
 
-                    const access_token = createAccessToken({ id: result.id });
+                    const access_token = createAccessToken({ id: result._id });
                     res.json({ access_token, user });
                 }
             );

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Notice = require("../models/noticeModel");
+const {Notices, NoticeComments} = require("../models/noticeModel");
 const User = require("../models/userModel");
 const multer = require('multer')
 
@@ -9,7 +9,7 @@ const upload = multer({ storage: storage })
 // Get all Notice posts
 const getAllNotices = async (req, res) => {
     try {
-        const noticePosts = await Notice.find().populate("AddedBy", "-password");
+        const noticePosts = await Notices.find().populate("AddedBy", "-password");
         //const problemPosts = await Notice.find().populate("user", "fullname");
        //const problemPosts = await Notice.find().populate("AddedBy", "fullname", "-password");
         
@@ -23,7 +23,7 @@ const getAllNotices = async (req, res) => {
 // Get a specific Notice post by ID
 const getNoticeById = async (req, res) => {
     try {
-        const noticePost = await Notice.findById(req.params.noticeId).populate("AddedBy", "-password");
+        const noticePost = await Notices.findById(req.params._id).populate("AddedBy", "-password");
         if (noticePost) res.json(noticePost);
         else res.status(404).json({ message: "Problem post not found" });
     } catch (err) {
@@ -42,10 +42,10 @@ const addNotice = async (req, res) => {
 
     try {
         //needed?
-        const existingUser = await User.findById(fullname);
-        if (!existingUser) {
-            return res.status(400).json({ message: "User not found" });
-        }
+        //const existingUser = await Users.findById(fullname);
+        //if (!existingUser) {
+        //    return res.status(400).json({ message: "User not found" });
+        //}
         const file = req.file;
 
         // this bit needed? ! needed? Check if file exists
@@ -55,7 +55,7 @@ const addNotice = async (req, res) => {
         if (file) {
           return res.status(400).json({ message: 'Feel free to upload a photo for this notice' });
         }
-        const noticePost = new Notice({  NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto: {filename: file.filename, data: file.buffer, contentType: file.mimetype,} });
+        const noticePost = new Notices({  NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto: {filename: file.filename, data: file.buffer, contentType: file.mimetype,} });
         const newNoticePost = await noticePost.save();
         res.status(201).json(newNoticePost);
     } catch (err) {
@@ -69,7 +69,7 @@ const updateNotice = async (req, res) => {
     const file = req.file;
 
     try {
-        const noticePost = await Notice.findByIdAndUpdate(
+        const noticePost = await Notices.findByIdAndUpdate(
             req.params.noticeId,
             { NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto },
             { new: true }
@@ -91,7 +91,7 @@ const updateNotice = async (req, res) => {
 // Delete a Notice Post
 const deleteNotice = async (req, res) => {
     try {
-        const noticePost = await Notice.findByIdAndDelete(req.params.noticeId);
+        const noticePost = await Notices.findByIdAndDelete(req.params._id);
         if (noticePost) res.json({ message: "Notice deleted" });
         else res.status(404).json({ message: "Notice post not found" });
     } catch (err) {
@@ -107,7 +107,7 @@ const getNoticesByFilter = async (req, res) => {
         if (fullname) query.AddedBy = fullname
         //if (tag) query.tags = tag;
 
-        const noticePost = await Notice.find(query).populate("AddedBy", "-password");
+        const noticePost = await Notices.find(query).populate("AddedBy", "-password");
         res.json(noticePost);
     } catch (err) {
         res.status(500).json({ message: "processing error occurred" });
@@ -116,14 +116,14 @@ const getNoticesByFilter = async (req, res) => {
 
 const addComment = async (req, res) => {
     const { content, AddedBy } = req.body;
-    const { noticeId } = req.params;
+    const { _id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(fullname)) {
         return res.status(400).json({ message: "Invalid User ID" });
     }
 
     try {
-        const noticePost = await Notice.findById(noticeId);
+        const noticePost = await Notices.findById(_id);
         if (!noticePost) {
             return res.status(404).json({ message: "Notice Post not found" });
         }
@@ -140,7 +140,7 @@ const addComment = async (req, res) => {
 // Get all comments for a Notice Post
 const getCommentsByNoticeId = async (req, res) => {
     try {
-        const noticePost = await Notice.findById(req.params.noticeId)
+        const noticePost = await Notices.findById(req.params._id)
         .populate("comments.AddedBy", "fullname");
         if (noticePost) res.json(noticePost.comments);
         else res.status(404).json({ message: "Notice Post not found" });
@@ -152,10 +152,10 @@ const getCommentsByNoticeId = async (req, res) => {
 
 // Delete a comment
 const deleteComment = async (req, res) => {
-    const { noticeId, commentId } = req.params;
+    const { _id, commentId } = req.params;
 
     try {
-        const noticePost = await Notice.findById(noticeId);
+        const noticePost = await Notices.findById(_id);
         if (!noticePost) {
             return res.status(404).json({ message: "Notice Post not found" });
         }
