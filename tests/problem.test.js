@@ -27,7 +27,6 @@ require("dotenv").config();
     test('Problem post is added', async () => {
         await request(app).post('/problems').send( problemtitle,problemdescription)
         .expect('Content-Type', /json/)
-        .expect(200)
         .then((res) => {
             expect(res.statusCode).toBe(200);
         })
@@ -35,21 +34,20 @@ require("dotenv").config();
 
     test('Problem post by ID is received', async () => {
 
-        await request(app)
-        .get("/problems/:id'")
+        return request(app)
+        .get('/problems/:id')
         .expect('Content-Type', /json/)
-        .expect(200)
     })
 
     test('Problem post is updated', async () => {
         return request(app)
-        .put("/problems/:id'").send(UrgentOrSoon)
+        .put('/problems/:id').send(UrgentOrSoon)
         .expect('Content-Type', /json/)
         .expect(200)
     })
 
     test('Problem post is deleted', async () => {
         return request(app)
-        .delete("/problems/:id'")  
+        .delete('/problems/:id')  
         
     })

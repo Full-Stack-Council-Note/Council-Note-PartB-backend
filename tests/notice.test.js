@@ -30,20 +30,20 @@ require("dotenv").config();
     test('Notice post by ID is received', async () => {
 
         await request(app)
-        .get("/notices/:id'")
+        .get('/notices/:id')
         .expect('Content-Type', /json/)
         .expect(200)
     })
 
     test('Notice post is updated', async () => {
         return request(app)
-        .put("/notices/:id'").send(NoticeDescription)
+        .put('/notices/:id').send(NoticeDescription)
         .expect('Content-Type', /json/)
         .expect(200)
     })
 
     test('Notice post is deleted', async () => {
         return request(app)
-        .delete("/notices/:id'")  
+        .delete('/notices/:id')  
         
     })

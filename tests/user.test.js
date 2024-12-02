@@ -39,14 +39,14 @@ require("dotenv").config();
     test('User by ID is received', async () => {
 
         await request(app)
-        .get("/users/:id'")
+        .get('/users/:id')
         .expect('Content-Type', /json/)
 
     })
 
     test('User is updated', async () => {
         return request(app)
-        .patch("/users/:id'").send(about)
+        .patch('/users/:id').send(about)
         .expect('Content-Type', /json/)
 
     })
