@@ -4,12 +4,11 @@ const request = require("supertest")
 require("dotenv").config();
 //const router = express.Router();
 
-
     beforeAll(async () => {
         await mongoose.connect(process.env.MONGO_URI)
 
         NoticeTitle= 'Test Notice title'
-        NoticeDescription = 'test notice description'
+        NoticeDescription = 'updated notice description'
         
     })
 
@@ -22,6 +21,29 @@ require("dotenv").config();
     })
     
     test('Notice post is added', async () => {
-        const response = await request(app).post('/notices').send( NoticeTitle,NoticeDescription)
-  
+        await request(app).post('/notices').send( NoticeTitle,NoticeDescription)
+        .expect('Content-Type', /json/)
+        .expect(200)
+    })
+
+
+    test('Notice post by ID is received', async () => {
+
+        await request(app)
+        .get("/notices/:id'")
+        .expect('Content-Type', /json/)
+        .expect(200)
+    })
+
+    test('Notice post is updated', async () => {
+        return request(app)
+        .put("/notices/:id'").send(NoticeDescription)
+        .expect('Content-Type', /json/)
+        .expect(200)
+    })
+
+    test('Notice post is deleted', async () => {
+        return request(app)
+        .delete("/notices/:id'")  
+        
     })

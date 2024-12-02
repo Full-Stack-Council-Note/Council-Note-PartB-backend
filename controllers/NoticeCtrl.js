@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const {Notices, NoticeComments} = require("../models/noticeModel");
-const User = require("../models/userModel");
+const Users = require("../models/userModel");
 const multer = require('multer')
 
 const storage = multer.memoryStorage()
-const upload = multer({ storage: storage })
+const file = multer({ storage: storage })
 
 // Get all Notice posts
 const getAllNotices = async (req, res) => {
@@ -34,30 +34,35 @@ const getNoticeById = async (req, res) => {
 // Add a Notice Post
 const addNotice = async (req, res) => {
     const { NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto} = req.body;
-    const file = req.file;
+    const upload = req.file;
                                        //or User?
-    if (!mongoose.Types.ObjectId.isValid(fullname)) {
-        return res.status(400).json({ message: "Invalid User ID" });
-    }
+    //if (!mongoose.Types.ObjectId.isValid(fullname)) {
+     //   return res.status(400).json({ message: "Invalid User ID" });
+    //}
 
     try {
         //needed?
-        //const existingUser = await Users.findById(fullname);
-        //if (!existingUser) {
-        //    return res.status(400).json({ message: "User not found" });
-        //}
-        const file = req.file;
+        const existingUser = await Users.findById(fullname);
+        if (!existingUser) {
+            return res.status(400).json({ message: "User not found" });
+        }
+        const noticePost = new Notices({  NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto });
+        const newNoticePost = await noticePost.save();
+        res.status(201).json(newNoticePost);
+        //const file = req.file;
 
         // this bit needed? ! needed? Check if file exists
         //        if (!file) {
         //    return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
         //}
-        if (file) {
-          return res.status(400).json({ message: 'Feel free to upload a photo for this notice' });
-        }
-        const noticePost = new Notices({  NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto: {filename: file.filename, data: file.buffer, contentType: file.mimetype,} });
-        const newNoticePost = await noticePost.save();
-        res.status(201).json(newNoticePost);
+        if (upload) {
+            noticePost.NoticePhoto = {
+                filename: file.filename,
+                data: file.buffer,
+                contentType: file.mimetype,
+            };
+          }
+
     } catch (err) {
         res.status(400).json({ message: "processing error occurred" });
     }
@@ -66,7 +71,7 @@ const addNotice = async (req, res) => {
 // Update a Notice Post
 const updateNotice = async (req, res) => {
     const { NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto } = req.body;
-    const file = req.file;
+    const upload = req.file;
 
     try {
         const noticePost = await Notices.findByIdAndUpdate(
@@ -77,10 +82,11 @@ const updateNotice = async (req, res) => {
 
         if (noticePost) res.json(noticePost);
         else res.status(404).json({ message: "Notice post not found" });
-        if (file) {
+        if (upload) {
             noticePost.NoticePhoto = {
-              data: file.buffer,
-              contentType: file.mimetype,
+                filename: file.filename,
+                data: file.buffer,
+                contentType: file.mimetype,
             };
           }
     } catch (err) {

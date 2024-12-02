@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const {Problems, ProblemComments} = require("../models/problemModel");
-const User = require("../models/userModel");
+const Users = require("../models/userModel");
 const multer = require('multer')
 
 const storage = multer.memoryStorage()
-const upload = multer({ storage: storage })
+const file = multer({ storage: storage })
 
 // Get all Problem posts
 const getAllProblems = async (req, res) => {
@@ -35,27 +35,28 @@ const getProblemById = async (req, res) => {
 // Add a Problem Post
 const addProblem = async (req, res) => {
     const { problemtitle, problemdescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, problemphoto} = req.body;
-                                       //or User?
-   // if (!mongoose.Types.ObjectId.isValid(fullname)) {
-    //    return res.status(400).json({ message: "Invalid User ID" });
-   // }
+    const upload = req.file;
+                                         //or User?
+    //if (!mongoose.Types.ObjectId.isValid(fullname)) {
+     //   return res.status(400).json({ message: "Invalid User ID" });
+    // }
 
     try {
         const problemPost = new Problems({  problemtitle, problemdescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, problemphoto });
         const newproblemPost = await problemPost.save();
         res.status(201).json(newproblemPost);
         //needed?
-        //const existingUser = await User.findById(fullname);
-        //if (!existingUser) {
-        //    return res.status(400).json({ message: "User not found" });
-        //}
-        const file = req.file;
+        const existingUser = await Users.findById(fullname);
+        if (!existingUser) {
+            return res.status(400).json({ message: "User not found" });
+        }
+        
 
         // this bit needed? ! needed? Check if file exists
         //        if (!file) {
         //    return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
         //}
-        if (file) {
+        if (upload) {
             problemPost.problemphoto = {
                 filename: file.filename,
                 data: file.buffer,

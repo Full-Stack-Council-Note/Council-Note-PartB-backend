@@ -7,14 +7,13 @@ require("dotenv").config();
 //const {User} = require("../models/userModel");
 //app.use(express.json());
 
-
     beforeAll(async () => {
         await mongoose.connect(process.env.MONGO_URI)
 
         fullname= 'Robert Bailey'
         email = 'RBailey@email.com'
         password= 'CNtest123'
-
+        about='I am the founder of CouncilNote'
     })
 
     beforeEach(async () => {
@@ -26,16 +25,29 @@ require("dotenv").config();
     })
 
     test('User is registered', async () => {
-        const response = await request(app).post('/auth/register').send(fullname,email,password)
-    
-        //expect(response.status).toBe(200)
-        //expect(response.body.user.email).toBe('RBailey@email.com')
+        await request(app).post('/auth/register').send(fullname,email,password)
+        .expect('Content-Type', /json/)
+
     })
     
     test('User is logged in', async () => {
-        const response = await request(app).post('/auth/login').send(email,password)
-    
-        //expect(response.status).toBe(200)
-        //expect(response.body.user.email).toBe('RBailey@email.com')
+        await request(app).post('/auth/login').send(email,password)
+        .expect('Content-Type', /json/)
+
+    })
+
+    test('User by ID is received', async () => {
+
+        await request(app)
+        .get("/users/:id'")
+        .expect('Content-Type', /json/)
+
+    })
+
+    test('User is updated', async () => {
+        return request(app)
+        .patch("/users/:id'").send(about)
+        .expect('Content-Type', /json/)
+
     })
 

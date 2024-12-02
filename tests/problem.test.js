@@ -11,7 +11,7 @@ require("dotenv").config();
 
         problemtitle= 'Test Problem title'
         problemdescription = 'test description'
-        
+        UrgentOrSoon='Urgent'
 
         // await getAllProblems()
     })
@@ -25,7 +25,31 @@ require("dotenv").config();
     })
     
     test('Problem post is added', async () => {
-        const response = await request(app).post('/problems').send( problemtitle,problemdescription)
-    
-  
+        await request(app).post('/problems').send( problemtitle,problemdescription)
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then((res) => {
+            expect(res.statusCode).toBe(200);
+        })
+    })
+
+    test('Problem post by ID is received', async () => {
+
+        await request(app)
+        .get("/problems/:id'")
+        .expect('Content-Type', /json/)
+        .expect(200)
+    })
+
+    test('Problem post is updated', async () => {
+        return request(app)
+        .put("/problems/:id'").send(UrgentOrSoon)
+        .expect('Content-Type', /json/)
+        .expect(200)
+    })
+
+    test('Problem post is deleted', async () => {
+        return request(app)
+        .delete("/problems/:id'")  
+        
     })

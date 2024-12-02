@@ -13,7 +13,7 @@ const {
 } = require('../controllers/UserCtrl');
 //const userCtrl = require('../controllers/UserCtrl');
                     //auth, adminOnly
-router.get('/searchUser', searchUser);
+router.get('/searchUser', auth, adminOnly, searchUser);
 
 router.get('/:id/', auth, adminOnly, getUser);
 

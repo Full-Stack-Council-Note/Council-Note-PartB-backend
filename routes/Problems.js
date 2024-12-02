@@ -13,23 +13,23 @@ const {
     deleteComment
 } = require('../controllers/ProblemCtrl');
 
-// Get all articles
+// Get all problem posts
 //auth, adminOnly,
 router.get('/', getAllProblems);
 
-// Get a specific article by ID
+// Get a specific problem post by ID
 //add back in auth, adminOnly,
 router.get('/:id/', getProblemById);
 
-// Create a new article
+// Add a problem post
 //add back in auth, adminOnly,
 router.post('/', addProblem);
 
-// Update an article
+// Update a problem post
 //auth, adminOnly,
 router.put('/:id/', updateProblem);
 
-// Delete an article
+// Delete a problem post
 //auth, adminOnly,
 router.delete('/:id/', deleteProblem);
 
