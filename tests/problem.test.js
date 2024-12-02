@@ -5,7 +5,6 @@ require("dotenv").config();
 //const router = express.Router();
 //const { getAllProblems, addProblem } = require('../controllers/ProblemCtrl');
 
-
     beforeAll(async () => {
         await mongoose.connect(process.env.MONGO_URI)
 
@@ -28,7 +27,7 @@ require("dotenv").config();
         await request(app).post('/problems').send( problemtitle,problemdescription)
         .expect('Content-Type', /json/)
         .then((res) => {
-            expect(res.statusCode).toBe(200);
+            expect(res.statusCode).toBe(201);
         })
     })
 

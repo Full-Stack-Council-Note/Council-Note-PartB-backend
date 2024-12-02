@@ -23,7 +23,7 @@ require("dotenv").config();
     test('Notice post is added', async () => {
         await request(app).post('/notices').send( NoticeTitle,NoticeDescription)
         .expect('Content-Type', /json/)
-        .expect(200)
+        .expect(201)
     })
 
 
