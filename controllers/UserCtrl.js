@@ -14,7 +14,7 @@ const searchUser = async (req, res) => {
 
             res.json({ users });
         } catch (err) {
-            return res.status(500).json({ msg: err.message });
+            return res.status(500).json({ msg: "processing error occurred" });
         }
 };
 
@@ -30,7 +30,7 @@ const getUser = async (req, res) => {
 
             res.json({ user });
         } catch (err) {
-            return res.status(500).json({ msg: err.message });
+            return res.status(500).json({ msg: "processing error occurred" });
         }
 };
 

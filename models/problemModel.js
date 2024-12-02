@@ -8,17 +8,18 @@ const ProblemCommentSchema = new mongoose.Schema({
 });
 
 const ProblemComment = mongoose.model('ProblemComment', ProblemCommentSchema);
+//module.exports = ProblemComment     (here?)
 
 const ProblemSchema = new Schema({
     // ProblemTitle: String,
-    ProblemTitle: { type: String, required: true, unique: true },
-    ProblemDescription: { type: String, required: true },
+    problemtitle: { type: String, required: true, unique: true },
+    problemdescription: { type: String, required: true },
                                             // turn back on , required: true   (for below)
     AddedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     DateAdded: { type: Date, default: Date.now },
     UrgentOrSoon: {type: Boolean},
     IsResolved: {type: Boolean},
-    ProblemPhoto: {
+    problemphoto: {
         data: Buffer,
         contentType: String,
         filename: String,

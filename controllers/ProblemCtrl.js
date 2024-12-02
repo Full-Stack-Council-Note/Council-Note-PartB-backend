@@ -34,14 +34,14 @@ const getProblemById = async (req, res) => {
 
 // Add a Problem Post
 const addProblem = async (req, res) => {
-    const { ProblemTitle, ProblemDescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, ProblemPhoto} = req.body;
+    const { problemtitle, problemdescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, problemphoto} = req.body;
                                        //or User?
    // if (!mongoose.Types.ObjectId.isValid(fullname)) {
     //    return res.status(400).json({ message: "Invalid User ID" });
    // }
 
     try {
-        const problemPost = new Problems({  ProblemTitle, ProblemDescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, ProblemPhoto: {filename: file.filename, data: file.buffer, contentType: file.mimetype,} });
+        const problemPost = new Problems({  problemtitle, problemdescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, problemphoto });
         const newproblemPost = await problemPost.save();
         res.status(201).json(newproblemPost);
         //needed?
@@ -56,7 +56,12 @@ const addProblem = async (req, res) => {
         //    return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
         //}
         if (file) {
-          return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
+            problemPost.problemphoto = {
+                filename: file.filename,
+                data: file.buffer,
+                contentType: file.mimetype,
+              };
+          //return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
         }
 
     } catch (err) {
@@ -66,22 +71,23 @@ const addProblem = async (req, res) => {
 
 // Update a Problem Post
 const updateProblem = async (req, res) => {
-    const { ProblemTitle, ProblemDescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, ProblemPhoto } = req.body;
+    const { problemtitle, problemdescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, problemphoto } = req.body;
     const file = req.file;
 
     try {
         const problemPost = await Problems.findByIdAndUpdate(
             req.params._id,
-            { ProblemTitle, ProblemDescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, ProblemPhoto },
+            { problemtitle, problemdescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, problemphoto },
             { new: true }
         ).populate("AddedBy", "-password");
 
         if (problemPost) res.json(problemPost);
         else res.status(404).json({ message: "Problem post not found" });
         if (file) {
-            problemPost.ProblemPhoto = {
-              data: file.buffer,
-              contentType: file.mimetype,
+            problemPost.problemphoto = {
+                filename: file.filename,
+                data: file.buffer,
+                contentType: file.mimetype,
             };
           }
     } catch (err) {
