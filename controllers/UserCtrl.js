@@ -1,46 +1,50 @@
-const Users = require("../models/userModel");
-const Problem = require("../models/problemModel");
-const Notice = require("../models/noticeModel");
+const { User } = require("../models/userModel");
+const {Problem,ProblemComment} = require("../models/problemModel");
+const {Notice,NoticeComment} = require("../models/noticeModel");
 
 
     //needed?
 const searchUser = async (req, res) => {
         try {
-            const users = await Users.find({
-                fullname: { $regex: req.query.fullname },
-            })
-                .limit(50)
-                .select("fullname");
+            const users = await User.find().select('-password')
+ 
+            //const users = await User.find({
+             //   fullname: { $regex: req.query.user.fullname },
+            //})
+            //    .limit(50)
+            //    .select("fullname");
 
-            res.json({ users });
+            res.json( users );
         } catch (err) {
             return res.status(500).json({ msg: "processing error occurred" });
         }
 };
 
-const getUser = async (req, res) => {
-        try {
-            const user = await User.findById(req.params._id)
-                .select("-password")
-                .populate("-password");
-                          //number of posts or list of their posts
-            if (!user) {
-                return res.status(400).json({ msg: "requested user does not exist." });
-            }
+const getUser= async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+            .select("-password")
+            .populate("problemslist noticeslist", "-password");
 
-            res.json({ user });
-        } catch (err) {
-            return res.status(500).json({ msg: "processing error occurred" });
+        if (!user) {
+            return res.status(400).json({ msg: "requested user does not exist." });
         }
+
+        res.json({ user });
+    } catch (err) {
+        return res.status(500).json({ msg: err.message });
+    }
 };
+
+
 
 const updateUser = async (req, res) => {
         try {
             const { fullname, about, profilephoto, ProblemsList, NoticesList } =
                 req.body;
-            if (!fullname) {
-                return res.status(400).json({ msg: "Please add your full name." });
-            }
+            //if (!fullname) {
+             //   return res.status(400).json({ msg: "Please add your full name." });
+            //}
 
             await User.findOneAndUpdate(
                 //{ _id: req.user._id },
@@ -67,11 +71,7 @@ const UpdateProblemsList = async (req, res) => {
             res.json({ problem });
             const newProblem = await Problem.findOneAndUpdate(
                 { _id: req.params._id },
-                {
-                    $push: {
-                        problemslist: req.problem._id,
-                    },
-                },
+                {$push: {problemslist: req.problem._id}},
                 { new: true }
             ).populate("problemslist");
 
@@ -96,11 +96,7 @@ const UpdateNoticesList = async (req, res) => {
             res.json({ notice });
             const newNotice = await Notice.findOneAndUpdate(
                 { _id: req.params._id },
-                {
-                    $push: {
-                        noticeslist: req.notice._id,
-                    },
-                },
+                {$push: {noticeslist: req.notice._id}},
                 { new: true }
             ).populate("noticeslist");
 
@@ -120,11 +116,8 @@ const deleteProblem = async (req, res) => {
         try {
             const updatedProblemsList = await Problem.findOneAndUpdate(
                 { _id: req.params._id },
-                {
-                    $pull: { problemslist: req.problem._id },
-                },
-                { new: true }
-            ).populate("problemslist");
+                {$pull: { problemslist: req.problem._id }},
+                { new: true }).populate("problemslist");
 
             await Problem.findOneAndUpdate(
                 { _id: req.problem._id },
@@ -142,7 +135,7 @@ const deleteNotice = async (req, res) => {
             const updatedNoticesList = await Notice.findOneAndUpdate(
                 { _id: req.params._id },
                 {
-                    $pull: { noticeslist: req.notice._id },
+                    $pull: { noticeslist: req.notice._id }
                 },
                 { new: true }
             ).populate("noticeslist");
@@ -159,10 +152,20 @@ const deleteNotice = async (req, res) => {
         }
 };
 const deleteUser = async (req, res) => {
+    const { _id, email } = req.params;
+
     try {
-        const user = await User.findByIdAndDelete(req.params._id);
-        if (user) res.json({ message: "user deleted" });
-        else res.status(404).json({ message: "user not found" });
+     // if (!_id) {
+     //   return res.status(400).json({ message: "User ID is required" });
+      //}
+  
+      const user = await User.findById({_id, email} ).exec();
+  
+      if (!user) {
+        return res.status(400).json({ message: "User not found" });
+      }
+  
+      const result = await user.deleteOne();
     } catch (err) {
         res.status(500).json({ message: "processing error occurred" });
     }

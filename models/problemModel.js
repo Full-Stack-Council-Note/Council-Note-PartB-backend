@@ -3,21 +3,22 @@ const Schema = mongoose.Schema;
 
 const ProblemCommentSchema = new mongoose.Schema({
     content: { type: String, required: true },
-    AddedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     DateAdded: { type: Date, default: Date.now },
 });
 
 const ProblemComment = mongoose.model('ProblemComment', ProblemCommentSchema);
 //module.exports = ProblemComment     (here?)
 
-const ProblemSchema = new Schema({
-    // ProblemTitle: String,
-    problemtitle: { type: String, required: true, unique: true },
+const ProblemSchema = new mongoose.Schema({
+    // ProblemTitle: String,                unique: true 
+    problemtitle: { type: String, required: true },
     problemdescription: { type: String, required: true },
                                             // turn back on , required: true   (for below)
-    AddedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     DateAdded: { type: Date, default: Date.now },
-    UrgentOrSoon: {type: Boolean},
+    Urgent: {type: Boolean},
+    Soon: {type: Boolean},
     IsResolved: {type: Boolean},
     problemphoto: {
         data: Buffer,
@@ -35,4 +36,4 @@ const ProblemSchema = new Schema({
 
 const Problem = mongoose.model('Problem', ProblemSchema);
 
-module.exports = {Problem, ProblemComment}
+module.exports = {Problem,ProblemComment}

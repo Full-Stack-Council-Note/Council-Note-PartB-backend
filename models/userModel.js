@@ -5,7 +5,6 @@ const UserSchema = new mongoose.Schema({
     fullname: {
         required: [true, 'Please enter your full name.'],
         type: String,
-        required: true,
         trim: true,
     },
     email: {
@@ -40,14 +39,14 @@ const UserSchema = new mongoose.Schema({
     problemslist: [
         {
             type: mongoose.Types.ObjectId,
-            ref: 'problem'
+            ref: 'Problem'
            //uppercase?
         }
     ],
     noticeslist: [
         {
             type: mongoose.Types.ObjectId,
-            ref: 'notice'
+            ref: 'Notice'
            //uppercase?
         }
     ],
@@ -55,4 +54,4 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', UserSchema)
 
-module.exports = User 
+module.exports = { User }

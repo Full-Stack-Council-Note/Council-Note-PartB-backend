@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const {Problems, ProblemComments} = require("../models/problemModel");
-const Users = require("../models/userModel");
+const {Problem,ProblemComment} = require("../models/problemModel");
+const {User} = require("../models/userModel");
 const multer = require('multer')
 
 const storage = multer.memoryStorage()
@@ -9,7 +9,7 @@ const file = multer({ storage: storage })
 // Get all Problem posts
 const getAllProblems = async (req, res) => {
     try {
-        const problemPosts = await Problems.find().populate("AddedBy", "-password");
+        const problemPosts = await Problem.find().populate("user", "fullname");
         //const problemPosts = await Problem.find().populate("user", "fullname");
        //const problemPosts = await Problem.find().populate("AddedBy", "fullname", "-password");
         
@@ -24,7 +24,7 @@ const getAllProblems = async (req, res) => {
 const getProblemById = async (req, res) => {
     try {
                                                     //or :problemId  ?
-        const problemPost = await Problems.findById(req.params._id).populate("AddedBy", "-password");
+        const problemPost = await Problem.findById(req.params._id).populate("user", "fullname");
         if (problemPost) res.json(problemPost);
         else res.status(404).json({ message: "Problem post not found" });
     } catch (err) {
@@ -34,28 +34,34 @@ const getProblemById = async (req, res) => {
 
 // Add a Problem Post
 const addProblem = async (req, res) => {
-    const { problemtitle, problemdescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, problemphoto} = req.body;
-    const upload = req.file;
+    const { problemtitle, problemdescription, user, Urgent,Soon, IsResolved } = req.body;
+    //const upload = req.file;
                                          //or User?
-    //if (!mongoose.Types.ObjectId.isValid(fullname)) {
-     //   return res.status(400).json({ message: "Invalid User ID" });
-    // }
+    //if (!mongoose.Types.ObjectId.isValid(user)) {
+     //  return res.status(400).json({ message: "Invalid User ID" });
+     //}
 
     try {
-        const problemPost = new Problems({  problemtitle, problemdescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, problemphoto });
-        const newproblemPost = await problemPost.save();
-        res.status(201).json(newproblemPost);
+       // const existingUser = await Users.findById(user);
+      //  if (!existingUser) {
+       //     return res.status(400).json({ message: "User not found" });
+       // }
+        //const { problemtitle, problemdescription, UrgentOrSoon, IsResolved} = req.body;
+        
+        const newProblem = new Problem({ problemtitle, problemdescription, user, Urgent,Soon, IsResolved }).populate("user", "fullname");
+        //await problemPost.save();
+         
+        await newProblem.save();
+        res.status(201).json(newProblem);
         //needed?
-        const existingUser = await Users.findById(fullname);
-        if (!existingUser) {
-            return res.status(400).json({ message: "User not found" });
-        }
+
         
 
         // this bit needed? ! needed? Check if file exists
         //        if (!file) {
         //    return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
         //}
+        const upload = req.file;
         if (upload) {
             problemPost.problemphoto = {
                 filename: file.filename,
@@ -72,15 +78,15 @@ const addProblem = async (req, res) => {
 
 // Update a Problem Post
 const updateProblem = async (req, res) => {
-    const { problemtitle, problemdescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, problemphoto } = req.body;
+    const { problemtitle, problemdescription, user, UrgentOrSoon, IsResolved, problemphoto } = req.body;
     const file = req.file;
 
     try {
-        const problemPost = await Problems.findByIdAndUpdate(
+        const problemPost = await Problem.findByIdAndUpdate(
             req.params._id,
-            { problemtitle, problemdescription, AddedBy, DateAdded, UrgentOrSoon, IsResolved, problemphoto },
+            { problemtitle, problemdescription, user, UrgentOrSoon, IsResolved, problemphoto },
             { new: true }
-        ).populate("AddedBy", "-password");
+        ).populate("user", "fullname");
 
         if (problemPost) res.json(problemPost);
         else res.status(404).json({ message: "Problem post not found" });
@@ -101,7 +107,7 @@ const updateProblem = async (req, res) => {
 const deleteProblem = async (req, res) => {
     try {
                                                            //or :problemId  ?
-        const problemPost = await Problems.findByIdAndDelete(req.params.problemId);
+        const problemPost = await Problem.findByIdAndDelete(req.params._id);
         if (problemPost) res.json({ message: "Problem deleted" });
         else res.status(404).json({ message: "Problem post not found" });
     } catch (err) {
@@ -117,7 +123,7 @@ const getProblemsByFilter = async (req, res) => {
         if (fullname) query.AddedBy = fullname
         //if (tag) query.tags = tag;
 
-        const problemPost = await Problems.find(query).populate("AddedBy", "-password");
+        const problemPost = await Problem.find(query).populate("AddedBy", "-password");
         res.json(problemPost);
     } catch (err) {
         res.status(500).json({ message: "processing error occurred" });
@@ -125,7 +131,7 @@ const getProblemsByFilter = async (req, res) => {
 };
 
 const addComment = async (req, res) => {
-    const { content, AddedBy } = req.body;
+    const { content, user } = req.body;
     const { _id } = req.params;
 
     //if (!mongoose.Types.ObjectId.isValid(fullname)) {
@@ -133,7 +139,7 @@ const addComment = async (req, res) => {
    // }
 
     try {
-        const problemPost = await Problems.findById(_id);
+        const problemPost = await Problem.findById(_id);
         if (!problemPost) {
             return res.status(404).json({ message: "Problem Post not found" });
         }
@@ -150,7 +156,7 @@ const addComment = async (req, res) => {
 // Get all comments for a Problem Post
 const getCommentsByProblemId = async (req, res) => {
     try {
-        const problemPost = await Problems.findById(req.params._id)
+        const problemPost = await Problem.findById(req.params._id)
         .populate("comments.AddedBy", "fullname");
         if (problemPost) res.json(problemPost.comments);
         else res.status(404).json({ message: "Problem Post not found" });
@@ -165,7 +171,7 @@ const deleteComment = async (req, res) => {
     const { _id, commentId } = req.params;
 
     try {
-        const problemPost = await Problems.findById(_id);
+        const problemPost = await Problem.findById(_id);
         if (!problemPost) {
             return res.status(404).json({ message: "Problem Post not found" });
         }

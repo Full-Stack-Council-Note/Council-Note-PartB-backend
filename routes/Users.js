@@ -13,17 +13,17 @@ const {
 } = require('../controllers/UserCtrl');
 //const userCtrl = require('../controllers/UserCtrl');
                     //auth, adminOnly
-router.get('/searchUser', auth, adminOnly, searchUser);
+router.get('/searchUser', searchUser);
+//auth, adminOnly
+router.get('/:id/', getUser);
 
-router.get('/:id/', auth, adminOnly, getUser);
+router.patch("/:id/", auth, updateUser);
 
-router.patch("/:id/", auth, adminOnly, updateUser);
-
-router.patch("/:id/UpdateProblemsList", auth, adminOnly, UpdateProblemsList);
-router.patch("/:id/UpdateNoticesList", auth, adminOnly, UpdateNoticesList);
-router.delete("/:id/deleteProblem", auth, adminOnly, deleteProblem);
-router.delete("/:id/deleteNotice", auth, adminOnly, deleteNotice);
-router.delete("/:id/deleteUser", auth, adminOnly, deleteUser);
+router.patch("/:id/UpdateProblemsList", auth, UpdateProblemsList);
+router.patch("/:id/UpdateNoticesList", auth,  UpdateNoticesList);
+router.delete("/:id/deleteProblem", auth,  deleteProblem);
+router.delete("/:id/deleteNotice", auth,  deleteNotice);
+router.delete("/:id/deleteUser", auth, deleteUser);
 
       //or patch
 module.exports = router;

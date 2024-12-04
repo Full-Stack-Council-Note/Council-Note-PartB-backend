@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {auth, adminOnly} = require('../middleware/authMiddleware');
+const {auth} = require('../middleware/authMiddleware');
 const {
     getAllProblems,
     getProblemById,
@@ -15,11 +15,11 @@ const {
 
 // Get all problem posts
 //auth, adminOnly,
-router.get('/', getAllProblems);
+router.get('/', auth, getAllProblems);
 
 // Get a specific problem post by ID
 //add back in auth, adminOnly,
-router.get('/:id/', getProblemById);
+router.get('/:id/', auth, getProblemById);
 
 // Add a problem post
 //add back in auth, adminOnly,
@@ -27,17 +27,17 @@ router.post('/', addProblem);
 
 // Update a problem post
 //auth, adminOnly,
-router.put('/:id/', updateProblem);
+router.put('/:id/', auth, updateProblem);
 
 // Delete a problem post
 //auth, adminOnly,
-router.delete('/:id/', deleteProblem);
+router.delete('/:id/', auth, deleteProblem);
 
 //filterout with category
-router.get('/filter', auth, adminOnly, getProblemsByFilter);
+router.get('/filter', auth, getProblemsByFilter);
 
-router.post("/:id/comments", auth, adminOnly, addComment );
-router.get("/:id/comments", auth, adminOnly, getCommentsByProblemId);
-router.delete("/:id/comments/:commentId", auth, adminOnly, deleteComment);
+router.post("/:id/comments", auth, addComment );
+router.get("/:id/comments", auth, getCommentsByProblemId);
+router.delete("/:id/comments/:commentId", auth, deleteComment);
 
 module.exports = router;

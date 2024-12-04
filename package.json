@@ -8,7 +8,7 @@
     "test-coverage": "jest --coverage",
     "start": "node server.js",
     "watch": "nodemon",
-    "seed": "node seeders/seed.js",
+    "seed": "node seeders/ProblemSeed.js",
     "dev": "nodemon server.js"
   },
   "keywords": [],

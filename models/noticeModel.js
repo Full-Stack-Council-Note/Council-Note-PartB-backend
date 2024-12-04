@@ -3,16 +3,16 @@ const Schema = mongoose.Schema;
 
 const NoticeCommentSchema = new mongoose.Schema({
     content: { type: String, required: true },
-    AddedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     DateAdded: { type: Date, default: Date.now },
 });
 
 const NoticeComment = mongoose.model('NoticeComment', NoticeCommentSchema);
 
-const NoticeSchema = new Schema({
+const NoticeSchema = new mongoose.Schema({
     NoticeTitle: { type: String, required: true, unique: true},
     NoticeDescription: { type: String, required: true },
-    AddedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     DateAdded: { type: Date, default: Date.now },
     NoticePhoto: {
         data: Buffer,
@@ -26,4 +26,4 @@ const NoticeSchema = new Schema({
 
 const Notice = mongoose.model('Notice', NoticeSchema);
 
-module.exports = {Notice, NoticeComment};
+module.exports = {Notice,NoticeComment};

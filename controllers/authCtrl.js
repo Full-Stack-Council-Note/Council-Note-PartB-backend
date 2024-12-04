@@ -1,4 +1,4 @@
-const Users = require("../models/userModel");
+const {User} = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -9,7 +9,7 @@ const authCtrl = {
 
             const passwordHash = await bcrypt.hash(password, 12);
 
-            const newUser = new Users({
+            const newUser = new User({
                 fullname,
                 email,
                 password: passwordHash,
@@ -20,7 +20,7 @@ const authCtrl = {
 
             res.cookie("refreshtoken", refresh_token, {
                 httpOnly: true,
-                path: "/refresh_token",
+                path: "/auth/refresh_token",
                 maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
             });
 
@@ -28,15 +28,16 @@ const authCtrl = {
                 msg: "Registered Successfully!",
                 access_token,
                 user: {
-                    ...newUser._doc,
+                    ...user._doc,
                     password: "",
                 },
+
             });
 
             await newUser.save();
 
             res.json({ msg: "registered" });
-            const user_email = await Users.findOne({ email });
+            const user_email = await User.findOne({ email });
             if (user_email) {
                 return res
                     .status(400)
@@ -56,8 +57,12 @@ const authCtrl = {
     changePassword: async (req, res) => {
         try {
             const { oldPassword, newPassword } = req.body;
+            //const email = req.body;
 
-            const user = await Users.findOne({ _id: req.user._id });
+           // if (!email) {
+           //     return res.status(400).json({ msg: "requested user does not exist." });
+            //}
+            const user = await User.findOne({ _id: req.user._id });
 
             const isMatch = await bcrypt.compare(oldPassword, user.password);
             if (!isMatch) {
@@ -72,7 +77,7 @@ const authCtrl = {
 
             const newPasswordHash = await bcrypt.hash(newPassword, 12);
 
-            await Users.findOneAndUpdate({ _id: req.user._id }, { password: newPasswordHash });
+            await User.findOneAndUpdate({ _id: req.user._id }, { password: newPasswordHash });
 
             res.json({ msg: "Password updated successfully." })
 
@@ -85,7 +90,7 @@ const authCtrl = {
         try {
             const { fullname, email, password } = req.body;
 
-            const user_email = await Users.findOne({ email });
+            const user_email = await User.findOne({ email });
             if (user_email) {
                 return res
                     .status(400)
@@ -100,7 +105,7 @@ const authCtrl = {
 
             const passwordHash = await bcrypt.hash(password, 12);
 
-            const newUser = new Users({
+            const newUser = new User({
                 fullname,
                 email,
                 password: passwordHash,
@@ -119,7 +124,7 @@ const authCtrl = {
         try {
             const { email, password } = req.body;
 
-            const user = await Users.findOne({ email, role: "user" }).populate(
+            const user = await User.findOne({ email }).populate(
                 "problemslist noticeslist",
                 "-password"
             );
@@ -138,9 +143,10 @@ const authCtrl = {
 
             res.cookie("refreshtoken", refresh_token, {
                 httpOnly: true,
-                path: "/api/refresh_token",
+                path: "/auth/refresh_token",
                 sameSite: 'lax',
-                maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
+                maxAge: 30 * 24 * 60 * 60 * 100000,
+                //maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
             });
 
             res.json({
@@ -150,6 +156,7 @@ const authCtrl = {
                     ...user._doc,
                     password: "",
                 },
+ 
             });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
@@ -160,7 +167,7 @@ const authCtrl = {
         try {
             const { email, password } = req.body;
             console.log("fd", password);
-            const user = await Users.findOne({ email, role: "admin" });
+            const user = await User.findOne({ email });
             console.log("user", user)
             if (!user) {
                 return res.status(400).json({ msg: "Email or Password is incorrect." });
@@ -176,8 +183,8 @@ const authCtrl = {
 
             res.cookie("refreshtoken", refresh_token, {
                 httpOnly: true,
-                path: "/api/refresh_token",
-                maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
+                path: "/auth/refresh_token",
+                maxAge: 30 * 24 * 60 * 60 * 100000, //validity of 30 days
             });
 
             res.json({
@@ -195,7 +202,7 @@ const authCtrl = {
 
     logout: async (req, res) => {
         try {
-            res.clearCookie("refreshtoken", { path: "/api/refresh_token" });
+            res.clearCookie("refreshtoken", { path: "/auth/refresh_token" });
             return res.json({ msg: "Logged out Successfully." });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
@@ -217,7 +224,7 @@ const authCtrl = {
                         return res.status(400).json({ msg: "Please login again." });
                     }
 
-                    const user = await Users.findById(result._id)
+                    const user = await User.findById(result._id)
                         .select("-password")
                         .populate("problemslist noticeslist", "-password");
 
@@ -237,7 +244,7 @@ const authCtrl = {
 
 const createAccessToken = (payload) => {
     return jwt.sign(payload, "AAAA", {
-        expiresIn: "1d",
+        expiresIn: "30d",
     });
 };
 

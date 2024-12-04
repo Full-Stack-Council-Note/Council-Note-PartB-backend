@@ -14,25 +14,25 @@ const {
 } = require('../controllers/NoticeCtrl');
 
 // Get all articles
-router.get('/', auth, adminOnly, getAllNotices);
+router.get('/', auth, getAllNotices);
 
 // Get a specific article by ID
-router.get('/:id/', auth, adminOnly, getNoticeById);
+router.get('/:id/', auth, getNoticeById);
 
 // Create a new article
-router.post('/', auth, adminOnly, addNotice);
+router.post('/', auth, addNotice);
 
 // Update an article
-router.put('/:id/', auth, adminOnly, updateNotice);
+router.put('/:id/', auth, updateNotice);
 
-// Delete an article
-router.delete('/:id/', auth, adminOnly, deleteNotice);
+// Delete an article Maybe on User profile page?
+router.delete('/:id/', auth, deleteNotice);
 
 //filterout with category
-router.get('/filter', auth, adminOnly, getNoticesByFilter);
+router.get('/filter', auth, getNoticesByFilter);
 
-router.post("/:id/comments", auth, adminOnly, addComment );
-router.get("/:id/comments", auth, adminOnly, getCommentsByNoticeId);
-router.delete("/:id/comments/:commentId", auth, adminOnly, deleteComment);
+router.post("/:id/comments", auth, addComment );
+router.get("/:id/comments", auth, getCommentsByNoticeId);
+router.delete("/:id/comments/:commentId", auth, deleteComment);
 
 module.exports = router;

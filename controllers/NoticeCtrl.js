@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const {Notices, NoticeComments} = require("../models/noticeModel");
+const {Notice, NoticeComment} = require("../models/noticeModel");
 const Users = require("../models/userModel");
 const multer = require('multer')
 
@@ -9,7 +9,7 @@ const file = multer({ storage: storage })
 // Get all Notice posts
 const getAllNotices = async (req, res) => {
     try {
-        const noticePosts = await Notices.find().populate("AddedBy", "-password");
+        const noticePosts = await Notice.find().populate("user", "fullname");
         //const problemPosts = await Notice.find().populate("user", "fullname");
        //const problemPosts = await Notice.find().populate("AddedBy", "fullname", "-password");
         
@@ -23,7 +23,7 @@ const getAllNotices = async (req, res) => {
 // Get a specific Notice post by ID
 const getNoticeById = async (req, res) => {
     try {
-        const noticePost = await Notices.findById(req.params._id).populate("AddedBy", "-password");
+        const noticePost = await Notice.findById(req.params._id).populate("user", "fullname");
         if (noticePost) res.json(noticePost);
         else res.status(404).json({ message: "Problem post not found" });
     } catch (err) {
@@ -33,7 +33,7 @@ const getNoticeById = async (req, res) => {
 
 // Add a Notice Post
 const addNotice = async (req, res) => {
-    const { NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto} = req.body;
+    const { NoticeTitle, NoticeDescription} = req.body;
     const upload = req.file;
                                        //or User?
     //if (!mongoose.Types.ObjectId.isValid(fullname)) {
@@ -42,11 +42,11 @@ const addNotice = async (req, res) => {
 
     try {
         //needed?
-        const existingUser = await Users.findById(fullname);
+        const existingUser = await User.findById(user);
         if (!existingUser) {
             return res.status(400).json({ message: "User not found" });
         }
-        const noticePost = new Notices({  NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto });
+        const noticePost = new Notice(req.body).populate("user", "fullname");
         const newNoticePost = await noticePost.save();
         res.status(201).json(newNoticePost);
         //const file = req.file;
@@ -70,15 +70,15 @@ const addNotice = async (req, res) => {
 
 // Update a Notice Post
 const updateNotice = async (req, res) => {
-    const { NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto } = req.body;
+    const { NoticeTitle, NoticeDescription, user, DateAdded, NoticePhoto } = req.body;
     const upload = req.file;
 
     try {
-        const noticePost = await Notices.findByIdAndUpdate(
+        const noticePost = await Notice.findByIdAndUpdate(
             req.params.noticeId,
-            { NoticeTitle, NoticeDescription, AddedBy, DateAdded, NoticePhoto },
+            { NoticeTitle, NoticeDescription, user, DateAdded, NoticePhoto },
             { new: true }
-        ).populate("AddedBy", "-password");
+        ).populate("user", "fullname");
 
         if (noticePost) res.json(noticePost);
         else res.status(404).json({ message: "Notice post not found" });
@@ -97,7 +97,7 @@ const updateNotice = async (req, res) => {
 // Delete a Notice Post
 const deleteNotice = async (req, res) => {
     try {
-        const noticePost = await Notices.findByIdAndDelete(req.params._id);
+        const noticePost = await Notice.findByIdAndDelete(req.params._id);
         if (noticePost) res.json({ message: "Notice deleted" });
         else res.status(404).json({ message: "Notice post not found" });
     } catch (err) {
@@ -110,10 +110,10 @@ const getNoticesByFilter = async (req, res) => {
     try {
         let query = {};
         if (DatesAdded) query.DateAdded = DatesAdded;
-        if (fullname) query.AddedBy = fullname
+        if (fullname) query.user = fullname
         //if (tag) query.tags = tag;
 
-        const noticePost = await Notices.find(query).populate("AddedBy", "-password");
+        const noticePost = await Notice.find(query).populate("user", "fullname");
         res.json(noticePost);
     } catch (err) {
         res.status(500).json({ message: "processing error occurred" });
@@ -121,15 +121,15 @@ const getNoticesByFilter = async (req, res) => {
 };
 
 const addComment = async (req, res) => {
-    const { content, AddedBy } = req.body;
+    const { content, user } = req.body;
     const { _id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(fullname)) {
+    if (!mongoose.Types.ObjectId.isValid(user)) {
         return res.status(400).json({ message: "Invalid User ID" });
     }
 
     try {
-        const noticePost = await Notices.findById(_id);
+        const noticePost = await Notice.findById(_id);
         if (!noticePost) {
             return res.status(404).json({ message: "Notice Post not found" });
         }
@@ -146,8 +146,8 @@ const addComment = async (req, res) => {
 // Get all comments for a Notice Post
 const getCommentsByNoticeId = async (req, res) => {
     try {
-        const noticePost = await Notices.findById(req.params._id)
-        .populate("comments.AddedBy", "fullname");
+        const noticePost = await Notice.findById(req.params._id)
+        .populate("comments.user", "fullname");
         if (noticePost) res.json(noticePost.comments);
         else res.status(404).json({ message: "Notice Post not found" });
     } catch (err) {
@@ -161,7 +161,7 @@ const deleteComment = async (req, res) => {
     const { _id, commentId } = req.params;
 
     try {
-        const noticePost = await Notices.findById(_id);
+        const noticePost = await Notice.findById(_id);
         if (!noticePost) {
             return res.status(404).json({ message: "Notice Post not found" });
         }
