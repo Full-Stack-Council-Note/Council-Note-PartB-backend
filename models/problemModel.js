@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+
 
 const ProblemCommentSchema = new mongoose.Schema({
     content: { type: String, required: true },
-    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+    fullname: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     DateAdded: { type: Date, default: Date.now },
 });
 
@@ -15,7 +15,7 @@ const ProblemSchema = new mongoose.Schema({
     problemtitle: { type: String, required: true },
     problemdescription: { type: String, required: true },
                                             // turn back on , required: true   (for below)
-    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     DateAdded: { type: Date, default: Date.now },
     Urgent: {type: Boolean},
     Soon: {type: Boolean},
@@ -26,7 +26,7 @@ const ProblemSchema = new mongoose.Schema({
         filename: String,
  
     },
-    comments: [ProblemCommentSchema],  //Immediate Problem to be solved in next 24 hours? yes or no
+    ProblemComments: [ProblemCommentSchema],  //Immediate Problem to be solved in next 24 hours? yes or no
     //ImageUpload?
     // UrgentProblem: {type: Boolean},
    // SoonProblem: {type: Boolean},

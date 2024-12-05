@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const {Notice, NoticeComment} = require("../models/noticeModel");
-const Users = require("../models/userModel");
+const {User} = require("../models/userModel");
 const multer = require('multer')
 
 const storage = multer.memoryStorage()
@@ -9,12 +9,12 @@ const file = multer({ storage: storage })
 // Get all Notice posts
 const getAllNotices = async (req, res) => {
     try {
-        const noticePosts = await Notice.find().populate("user", "fullname");
+        const  notices = await Notice.find().populate("user", "fullname");
         //const problemPosts = await Notice.find().populate("user", "fullname");
        //const problemPosts = await Notice.find().populate("AddedBy", "fullname", "-password");
         
                                                       //or other word?
-        res.json(noticePosts);
+        res.json( notices);
     } catch (err) {
         res.status(500).json({ message: "Error occurred finding Notice posts" });
     }
@@ -23,67 +23,75 @@ const getAllNotices = async (req, res) => {
 // Get a specific Notice post by ID
 const getNoticeById = async (req, res) => {
     try {
-        const noticePost = await Notice.findById(req.params._id).populate("user", "fullname");
-        if (noticePost) res.json(noticePost);
-        else res.status(404).json({ message: "Problem post not found" });
+        const  notices = await Notice.findOne(req.params._id).populate("user", "fullname");
+        res.json({ notices});
+        
     } catch (err) {
-        res.status(500).json({ message: "Error occurred finding this Notice post" });
+        res.status(404).json({ message: "Notice post not found" });
+        res.status(500).json({ message: "Server error occurred finding this Notice post" });
     }
 };
 
 // Add a Notice Post
 const addNotice = async (req, res) => {
-    const { NoticeTitle, NoticeDescription} = req.body;
-    const upload = req.file;
+    //const { NoticeTitle, NoticeDescription} = req.body;
+    
                                        //or User?
-    //if (!mongoose.Types.ObjectId.isValid(fullname)) {
-     //   return res.status(400).json({ message: "Invalid User ID" });
-    //}
-
     try {
+        const { NoticeTitle, NoticeDescription, NoticePhoto} = req.body;
+        const notices = new Notice({ NoticeTitle, NoticeDescription, NoticePhoto} );
+        await notices.save();
+                            // need these {}  ?
+        res.json({ msg: "Notice post added successfully" });
+       // const existingUser = await Users.findById(user);
+      //  if (!existingUser) {
+       //     return res.status(400).json({ message: "User not found" });
+       // }
+        //const { problemtitle, problemdescription, UrgentOrSoon, IsResolved} = req.body;
+        
+        //const newProblem = new Problem({ problemtitle, problemdescription, user, Urgent,Soon, IsResolved }).populate("user", "fullname");
+        //await problemPost.save();
+         
+
         //needed?
-        const existingUser = await User.findById(user);
-        if (!existingUser) {
-            return res.status(400).json({ message: "User not found" });
-        }
-        const noticePost = new Notice(req.body).populate("user", "fullname");
-        const newNoticePost = await noticePost.save();
-        res.status(201).json(newNoticePost);
-        //const file = req.file;
 
         // this bit needed? ! needed? Check if file exists
         //        if (!file) {
-        //    return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
+        //    return res.status(400).json({ message: 'Feel free to upload a photo of the notice' });
         //}
+        const upload = req.file;
         if (upload) {
-            noticePost.NoticePhoto = {
+            NoticePhoto = {
                 filename: file.filename,
                 data: file.buffer,
                 contentType: file.mimetype,
-            };
-          }
+              };
+          //return res.status(400).json({ message: 'Feel free to upload a photo of the notice' });
+        }
+        //if (!mongoose.Types.ObjectId.isValid(User.fullname)) {
+         //   return res.status(400).json({ message: "Invalid User ID" });
+        //}
 
     } catch (err) {
-        res.status(400).json({ message: "processing error occurred" });
+        res.status(400).json({ message: "error occurred adding notice post" });
     }
 };
 
 // Update a Notice Post
 const updateNotice = async (req, res) => {
-    const { NoticeTitle, NoticeDescription, user, DateAdded, NoticePhoto } = req.body;
-    const upload = req.file;
+    const { NoticeTitle, NoticeDescription, NoticePhoto } = req.body;   
 
     try {
-        const noticePost = await Notice.findByIdAndUpdate(
-            req.params.noticeId,
-            { NoticeTitle, NoticeDescription, user, DateAdded, NoticePhoto },
+        await Notice.findOneAndUpdate(
+            req.params._id,    
+            { NoticeTitle, NoticeDescription, NoticePhoto },
             { new: true }
-        ).populate("user", "fullname");
-
-        if (noticePost) res.json(noticePost);
-        else res.status(404).json({ message: "Notice post not found" });
+        );
+        res.json({ msg: "Notice post updated successfully." });
+       
+        const upload = req.file;
         if (upload) {
-            noticePost.NoticePhoto = {
+            NoticePhoto = {
                 filename: file.filename,
                 data: file.buffer,
                 contentType: file.mimetype,
@@ -91,14 +99,15 @@ const updateNotice = async (req, res) => {
           }
     } catch (err) {
         res.status(400).json({ message: "error occurred updating notice post" });
+        res.status(404).json({ message: "Notice post not found" });
     }
 };
 
 // Delete a Notice Post
 const deleteNotice = async (req, res) => {
     try {
-        const noticePost = await Notice.findByIdAndDelete(req.params._id);
-        if (noticePost) res.json({ message: "Notice deleted" });
+        const  notices = await Notice.findByIdAndDelete(req.params._id);
+        if ( notices) res.json({ message: "Notice deleted" });
         else res.status(404).json({ message: "Notice post not found" });
     } catch (err) {
         res.status(500).json({ message: "processing error occurred" });
@@ -113,31 +122,31 @@ const getNoticesByFilter = async (req, res) => {
         if (fullname) query.user = fullname
         //if (tag) query.tags = tag;
 
-        const noticePost = await Notice.find(query).populate("user", "fullname");
-        res.json(noticePost);
+        const  notices = await Notice.find(req.query).populate("user", "fullname");
+        res.json( notices);
     } catch (err) {
         res.status(500).json({ message: "processing error occurred" });
     }
 };
 
 const addComment = async (req, res) => {
-    const { content, user } = req.body;
-    const { _id } = req.params;
+    const { content, fullname } = req.body;
+    //const { _id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(user)) {
-        return res.status(400).json({ message: "Invalid User ID" });
-    }
+    //if (!mongoose.Types.ObjectId.isValid(fullname)) {
+     //   return res.status(400).json({ message: "Invalid User ID" });
+    //}
 
     try {
-        const noticePost = await Notice.findById(_id);
-        if (!noticePost) {
+        const notices = await Notice.findOne(req.params._id);
+        if (! notices) {
             return res.status(404).json({ message: "Notice Post not found" });
         }
+         //or NoticeComment (referring to schema?)
+        notices.NoticeComments.push({ content, fullname });
+        await  notices.save();
 
-        noticePost.comments.push({ content, AddedBy });
-        await noticePost.save();
-
-        res.status(201).json(noticePost);
+        res.json( notices);
     } catch (err) {
         res.status(400).json({ message: "processing error occurred" });
     }
@@ -146,9 +155,8 @@ const addComment = async (req, res) => {
 // Get all comments for a Notice Post
 const getCommentsByNoticeId = async (req, res) => {
     try {
-        const noticePost = await Notice.findById(req.params._id)
-        .populate("comments.user", "fullname");
-        if (noticePost) res.json(noticePost.comments);
+        const  notices = await Notice.findOne(req.params._id).populate("user", "fullname");
+        if ( notices) res.json( notices.NoticeComments);
         else res.status(404).json({ message: "Notice Post not found" });
     } catch (err) {
         res.status(500).json({ message: "processing error occurred" });
@@ -161,17 +169,17 @@ const deleteComment = async (req, res) => {
     const { _id, commentId } = req.params;
 
     try {
-        const noticePost = await Notice.findById(_id);
-        if (!noticePost) {
+        const  notices = await Notice.findById(req.params._id);
+        if (! notices) {
             return res.status(404).json({ message: "Notice Post not found" });
         }
 
-        const commentIndex = noticePost.comments.findIndex(c => c._id.toString() === commentId);
+        const commentIndex =  notices.NoticeComments.findIndex(c => c._id.toString() === commentId);
         if (commentIndex === -1) {
             return res.status(404).json({ message: "Comment not found" });
         }
 
-        noticePost.comments.splice(commentIndex, 1);
+        notices.NoticeComments.splice(commentIndex, 1);
         await noticePost.save();
 
         res.json({ message: "Comment deleted" });

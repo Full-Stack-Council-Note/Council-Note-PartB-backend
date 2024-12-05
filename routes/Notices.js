@@ -23,7 +23,7 @@ router.get('/:id/', auth, getNoticeById);
 router.post('/', auth, addNotice);
 
 // Update an article
-router.put('/:id/', auth, updateNotice);
+router.patch('/:id/', auth, updateNotice);
 
 // Delete an article Maybe on User profile page?
 router.delete('/:id/', auth, deleteNotice);

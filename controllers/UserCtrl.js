@@ -1,10 +1,13 @@
 const { User } = require("../models/userModel");
 const {Problem,ProblemComment} = require("../models/problemModel");
 const {Notice,NoticeComment} = require("../models/noticeModel");
+const multer = require('multer')
 
+const storage = multer.memoryStorage()
+const file = multer({ storage: storage })
 
     //needed?
-const searchUser = async (req, res) => {
+const searchUsers = async (req, res) => {
         try {
             const users = await User.find().select('-password')
  
@@ -21,19 +24,20 @@ const searchUser = async (req, res) => {
 };
 
 const getUser= async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id)
-            .select("-password")
-            .populate("problemslist noticeslist", "-password");
 
-        if (!user) {
-            return res.status(400).json({ msg: "requested user does not exist." });
+       try {
+           const user = await User.findOne( req.params._id).select("-password")
+        //.select("-password")
+        //.populate("problemslist noticeslist", "-password");
+            res.json( {user} );
+
+        //if (!user) {
+        //    return res.status(400).json({ msg: "requested user does not exist." });
+       // }
+        } catch (err) {
+        return res.status(500).json({ msg: "Server error occurred" });
         }
-
-        res.json({ user });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
+     
 };
 
 
@@ -55,6 +59,14 @@ const updateUser = async (req, res) => {
             );
 
             res.json({ msg: "Profile updated successfully." });
+            const upload = req.file;
+            if (upload) {
+                user.profilephoto = {
+                    filename: file.filename,
+                    data: file.buffer,
+                    contentType: file.mimetype,
+                };
+            }
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
@@ -152,20 +164,20 @@ const deleteNotice = async (req, res) => {
         }
 };
 const deleteUser = async (req, res) => {
-    const { _id, email } = req.params;
+    //const { _id, email } = req.params;
 
     try {
      // if (!_id) {
      //   return res.status(400).json({ message: "User ID is required" });
       //}
   
-      const user = await User.findById({_id, email} ).exec();
-  
-      if (!user) {
+      const result = await User.findByIdAndDelete(req.params._id)
+      res.json(result)
+      if (!result) {
         return res.status(400).json({ message: "User not found" });
       }
   
-      const result = await user.deleteOne();
+      //const result = await user.deleteOne();
     } catch (err) {
         res.status(500).json({ message: "processing error occurred" });
     }
@@ -178,7 +190,7 @@ const deleteUser = async (req, res) => {
 //});
 
 module.exports = {
-    searchUser,
+    searchUsers,
     getUser,
     updateUser,
     UpdateProblemsList,

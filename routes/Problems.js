@@ -27,7 +27,7 @@ router.post('/', addProblem);
 
 // Update a problem post
 //auth, adminOnly,
-router.put('/:id/', auth, updateProblem);
+router.patch('/:id/', auth, updateProblem);
 
 // Delete a problem post
 //auth, adminOnly,

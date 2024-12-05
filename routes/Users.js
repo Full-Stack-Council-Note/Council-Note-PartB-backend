@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const {auth, adminOnly} = require('../middleware/authMiddleware');
 const {
-    searchUser,
+    searchUsers,
     getUser,
     updateUser,
     UpdateProblemsList,
@@ -13,7 +13,7 @@ const {
 } = require('../controllers/UserCtrl');
 //const userCtrl = require('../controllers/UserCtrl');
                     //auth, adminOnly
-router.get('/searchUser', searchUser);
+router.get('/searchUsers', searchUsers);
 //auth, adminOnly
 router.get('/:id/', getUser);
 
