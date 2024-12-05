@@ -44,8 +44,69 @@ let users = [
         "noticeslist":[]
     }
 
-
 ]
+
+const problems = [
+    {
+        "problemtitle": "again test hello",
+        "problemdescription": "test problem description one more time55",
+        "user":users.find(obj => obj.fullname === 'Rob Bailey'),
+        "DateAdded": Date.now(),
+        "Urgent":true,
+        "Soon":false,
+        "IsResolved":false,
+        "problemphoto": {},
+        "ProblemComments": [{
+            "content": "this is a test problem again today35",
+            "fullname":users.find(obj => obj.fullname === 'Paul Bailey'),
+            "DateAdded": Date.now(),
+            },
+            {
+            "content": "this is a second problem comment615",
+            "fullname":users.find(obj => obj.fullname === 'Robert Bailey'),
+            "DateAdded": Date.now(),
+            }]
+        
+    },
+    {
+        "problemtitle": "problem title testing",
+        "problemdescription": "test problem description860",
+        "user":users.find(obj => obj.fullname === 'Robert Bailey'),
+        "DateAdded": Date.now(),
+        "Urgent": false,
+        "Soon":true,
+        "IsResolved":false,
+        "problemphoto": {},
+        "ProblemComments": [{
+            "content": "this is a bad problem again99",
+            "fullname":users.find(obj => obj.fullname === 'Paul Bailey'),
+            "DateAdded": Date.now(),
+
+        }]
+    },
+    {
+        "problemtitle": "this is a major problem",
+        "problemdescription": "test problem description140",
+        "user":users.find(obj => obj.fullname === 'Robert Bailey'),
+        "DateAdded": Date.now(),
+        "Urgent":true,
+        "Soon":false,
+        "IsResolved":false,
+        "problemphoto": {},
+        "ProblemComments": [{
+            "content": "this is a bad problem today again746",
+            "fullname":users.find(obj => obj.fullname === 'Paul Bailey'),
+            "DateAdded": Date.now(),
+            },
+            {
+            "content": "this is a second problem comment3576",
+            "fullname":users.find(obj => obj.fullname === 'Rob Bailey'),
+            "DateAdded": Date.now(),
+            }]
+        
+    },
+]
+
 
 const noticecomments = [
     
