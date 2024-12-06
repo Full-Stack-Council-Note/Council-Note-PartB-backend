@@ -23,7 +23,7 @@ router.get('/:id/', auth, getProblemById);
 
 // Add a problem post
 //add back in auth, adminOnly,
-router.post('/', addProblem);
+router.post('/', auth, addProblem);
 
 // Update a problem post
 //auth, adminOnly,

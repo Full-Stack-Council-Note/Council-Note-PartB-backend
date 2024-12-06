@@ -52,18 +52,17 @@ const problems = [
         "problemdescription": "test problem description one more time55",
         "user":users.find(obj => obj.fullname === 'Rob Bailey'),
         "DateAdded": Date.now(),
-        "Urgent":true,
-        "Soon":false,
+        "UrgentOrSoon":"Urgent",
         "IsResolved":false,
-        "problemphoto": {},
+        "problemphoto": "",
         "ProblemComments": [{
             "content": "this is a test problem again today35",
-            "fullname":users.find(obj => obj.fullname === 'Paul Bailey'),
+            "user":users.find(obj => obj.fullname === 'Paul Bailey'),
             "DateAdded": Date.now(),
             },
             {
             "content": "this is a second problem comment615",
-            "fullname":users.find(obj => obj.fullname === 'Robert Bailey'),
+            "user":users.find(obj => obj.fullname === 'Robert Bailey'),
             "DateAdded": Date.now(),
             }]
         
@@ -73,13 +72,12 @@ const problems = [
         "problemdescription": "test problem description860",
         "user":users.find(obj => obj.fullname === 'Robert Bailey'),
         "DateAdded": Date.now(),
-        "Urgent": false,
-        "Soon":true,
+        "UrgentOrSoon":"Soon",
         "IsResolved":false,
-        "problemphoto": {},
+        "problemphoto": "",
         "ProblemComments": [{
             "content": "this is a bad problem again99",
-            "fullname":users.find(obj => obj.fullname === 'Paul Bailey'),
+            "user":users.find(obj => obj.fullname === 'Paul Bailey'),
             "DateAdded": Date.now(),
 
         }]
@@ -89,18 +87,17 @@ const problems = [
         "problemdescription": "test problem description140",
         "user":users.find(obj => obj.fullname === 'Robert Bailey'),
         "DateAdded": Date.now(),
-        "Urgent":true,
-        "Soon":false,
+        "UrgentOrSoon":"N/A",
         "IsResolved":false,
-        "problemphoto": {},
+        "problemphoto": "",
         "ProblemComments": [{
             "content": "this is a bad problem today again746",
-            "fullname":users.find(obj => obj.fullname === 'Paul Bailey'),
+            "user":users.find(obj => obj.fullname === 'Paul Bailey'),
             "DateAdded": Date.now(),
             },
             {
             "content": "this is a second problem comment3576",
-            "fullname":users.find(obj => obj.fullname === 'Rob Bailey'),
+            "user":users.find(obj => obj.fullname === 'Rob Bailey'),
             "DateAdded": Date.now(),
             }]
         
@@ -112,17 +109,16 @@ const noticecomments = [
     
 ]
 
-
 const notices = [
     {
         "NoticeTitle": "new notice title67",
         "NoticeDescription": "test notice description 576",
         "user":users.find(obj => obj.fullname === 'Rob Bailey'),
         "DateAdded": Date.now(),
-        "NoticePhoto": {},
+        "NoticePhoto": "",
         "NoticeComments": [{
             "content": "this is an interesting notice comment test again",
-            "fullname":users.find(obj => obj.fullname === 'Paul Bailey'),
+            "user":users.find(obj => obj.fullname === 'Paul Bailey'),
             "DateAdded": Date.now(),
             }]
     },
@@ -132,15 +128,15 @@ const notices = [
         "NoticeDescription": "this is a test notice description65",
         "user":users.find(obj => obj.fullname === 'Rob Bailey'),
         "DateAdded": Date.now(),
-        "NoticePhoto": {},
+        "NoticePhoto": "",
         "NoticeComments": [{
             "content": "this is a new notice comment hello",
-            "fullname":users.find(obj => obj.fullname === 'Robert Bailey'),
+            "user":users.find(obj => obj.fullname === 'Robert Bailey'),
             "DateAdded": Date.now(),
             },
             {
             "content": "testing notice comments more again",
-            "fullname":users.find(obj => obj.fullname === 'Paul Bailey'),
+            "user":users.find(obj => obj.fullname === 'Paul Bailey'),
             "DateAdded": Date.now(),
             }]
     },
@@ -149,20 +145,21 @@ const notices = [
         "NoticeDescription": "this is a test notice description again now",
         "user":users.find(obj => obj.fullname === 'Rob Bailey'),
         "DateAdded": Date.now(),
-        "NoticePhoto": {},
+        "NoticePhoto": "",
         "NoticeComments": [{
             "content": "And another notice comment hello",
-            "fullname":users.find(obj => obj.fullname === 'Robert Bailey'),
+            "user":users.find(obj => obj.fullname === 'Robert Bailey'),
             "DateAdded": Date.now(),
             },
             {
             "content": "testing notice comments more again2",
-            "fullname":users.find(obj => obj.fullname === 'Rob Bailey'),
+            "user":users.find(obj => obj.fullname === 'Rob Bailey'),
             "DateAdded": Date.now(),
             }]
     }
     
 ]
+
 
 //async function seedUsers() {
   //  await mongoose.connect(process.env.MONGO_URI).then(async () => {
@@ -176,12 +173,12 @@ const notices = [
 //seedUsers()
 
 //async function seedProblems() {
-  //  await mongoose.connect(process.env.MONGO_URI).then(async () => {
-    //   await Problem.insertMany(problems)
+ //   await mongoose.connect(process.env.MONGO_URI).then(async () => {
+   //    await Problem.insertMany(problems)
         
-   // }).then(() => {
-   //   mongoose.connection.close()
-  //  })
+  //  }).then(() => {
+  //    mongoose.connection.close()
+   // })
 //}
 
 //seedProblems()

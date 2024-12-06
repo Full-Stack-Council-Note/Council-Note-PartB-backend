@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const ProblemCommentSchema = new mongoose.Schema({
     content: { type: String, required: true },
-    fullname: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     DateAdded: { type: Date, default: Date.now },
 });
 
@@ -15,10 +15,9 @@ const ProblemSchema = new mongoose.Schema({
     problemtitle: { type: String, required: true },
     problemdescription: { type: String, required: true },
                                             // turn back on , required: true   (for below)
-    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     DateAdded: { type: Date, default: Date.now },
-    Urgent: {type: Boolean},
-    Soon: {type: Boolean},
+    UrgentOrSoon: {type: String, enum: ['Urgent', 'Soon','N/A'], default: 'N/A'},
     IsResolved: {type: Boolean},
     problemphoto: {
         data: Buffer,

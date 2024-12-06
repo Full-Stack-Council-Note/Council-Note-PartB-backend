@@ -44,37 +44,39 @@ const addProblem = async (req, res) => {
      //}
 
     try {
-        const { problemtitle, problemdescription, Urgent, Soon, IsResolved, problemphoto } = req.body;
-        const problems = new Problem({ problemtitle, problemdescription, Urgent, Soon, IsResolved, problemphoto });
+        const { problemtitle, problemdescription, UrgentOrSoon, IsResolved } = req.body;
+        const problems = new Problem({ problemtitle, problemdescription, UrgentOrSoon, IsResolved });
         await problems.save();
-                            // need these {}  ?
+   
         res.json({ msg: "Problem post added successfully" });
-    
+       
         const upload = req.file;
         if (upload) {
-            problemphoto = {
+            problems.problemphoto = {
                 filename: file.filename,
                 data: file.buffer,
                 contentType: file.mimetype,
               };
-          //return res.status(400).json({ message: 'Feel free to upload a photo of the problem' });
+          
         }
 
     } catch (err) {
         res.status(400).json({ message: "error occurred adding problem post" });
+        res.status(500).json({ msg: err.message });
     }
 };
 
 // Update a Problem Post
 const updateProblem = async (req, res) => {
-    const { problemtitle, problemdescription, Urgent, Soon, IsResolved, problemphoto } = req.body;
+                                                               //problemphoto  put back?
+    const { problemtitle, problemdescription, UrgentOrSoon, IsResolved } = req.body;
     
 
     try {
         await Problem.findOneAndUpdate(
-            
+                                                                   //problemphoto  put back?
             req.params._id,        
-            { problemtitle, problemdescription, Urgent, Soon, IsResolved, problemphoto },
+            { problemtitle, problemdescription, UrgentOrSoon, IsResolved },
             { new: true }
         );
         res.json({ msg: "Problem post updated successfully." });
@@ -90,6 +92,7 @@ const updateProblem = async (req, res) => {
     } catch (err) {
         res.status(404).json({ message: "Problem post not found" });
         res.status(400).json({ message: "error occurred updating problem post" });
+        res.status(500).json({ msg: err.message });
     }
 
 };
@@ -102,7 +105,7 @@ const deleteProblem = async (req, res) => {
         if (problems) res.json({ message: "Problem deleted" });
         else res.status(404).json({ message: "Problem post not found" });
     } catch (err) {
-        res.status(500).json({ message: "processing error occurred" });
+        res.status(500).json({ msg: err.message });
     }
 };
 const getProblemsByFilter = async (req, res) => {
@@ -114,15 +117,15 @@ const getProblemsByFilter = async (req, res) => {
         if (fullname) query.user = fullname
         //if (tag) query.tags = tag;
 
-        const problems = await Problem.find(query).populate("user", "-password");
+        const problems = await Problem.find(query).populate("user", "fullname");
         res.json(problems);
     } catch (err) {
-        res.status(500).json({ message: "processing error occurred" });
+        res.status(500).json({ msg: err.message });
     }
 };
 
 const addComment = async (req, res) => {
-    const { content, fullname } = req.body;
+    const { content, user, fullname } = req.body;
     //const { _id } = req.params;
 
     //if (!mongoose.Types.ObjectId.isValid(fullname)) {
@@ -135,12 +138,13 @@ const addComment = async (req, res) => {
             return res.status(404).json({ message: "Problem Post not found" });
         }
 
-        problems.ProblemComments.push({ content, fullname });
+        problems.ProblemComments.push({ content, user, fullname });
         await problems.save();
 
-        res.status(201).json(problems);
+        res.json({ message: "Comment successfully added" });
     } catch (err) {
         res.status(400).json({ message: "processing error occurred" });
+        res.status(500).json({ msg: err.message });
     }
 };
 
@@ -151,7 +155,7 @@ const getCommentsByProblemId = async (req, res) => {
         if (problems) res.json(problems.ProblemComments);
         else res.status(404).json({ message: "Problem Post not found" });
     } catch (err) {
-        res.status(500).json({ message: "processing error occurred" });
+        res.status(500).json({ msg: err.message });
     }
 };
 

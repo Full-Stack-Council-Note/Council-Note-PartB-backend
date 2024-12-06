@@ -74,65 +74,65 @@ const updateUser = async (req, res) => {
 
 const UpdateProblemsList = async (req, res) => {
         try {
-            const problem = await Problem.find({
-                _id: req.params._id,
+            const problemslist = await Problem.find({
+                _id: req.problems._id,
                 //problemslist: req.problem._id, PLid, NLid
-                problemslist: req.problem._id,
+                problemslist: req.params._id,
             });
 
-            res.json({ problem });
-            const newProblem = await Problem.findOneAndUpdate(
-                { _id: req.params._id },
-                {$push: {problemslist: req.problem._id}},
+            res.json({ problemslist });
+            const newproblemslist = await Problem.findOneAndUpdate(
+                { _id: req.problems._id },
+                {$push: {problemslist: req.params._id}},
                 { new: true }
             ).populate("problemslist");
 
-            await Problem.findOneAndUpdate(
-                { _id: req.problem._id },
-                { $push: { problemslist: req.params._id} },
-                { new: true }
-            );
+            //await Problem.findOneAndUpdate(
+             //   { _id: req.problems._id },
+            //    { $push: { problemslist: req.params._id} },
+           //     { new: true }
+           // );
 
-            res.json({ newProblem });
+            res.json({ newproblemslist });
         } catch (err) {
             return res.status(500).json({ msg: "problems not found" });
         }
 };
 const UpdateNoticesList = async (req, res) => {
         try {
-            const notice = await Notice.find({
-                _id: req.params._id,
-                noticeslist: req.notice._id,
+            const noticeslist = await Notice.find({
+                _id: req.notices._id,
+                noticeslist: req.params._id,
             });
 
-            res.json({ notice });
-            const newNotice = await Notice.findOneAndUpdate(
-                { _id: req.params._id },
-                {$push: {noticeslist: req.notice._id}},
+            res.json({ noticeslist });
+            const newnoticeslist = await Notice.findOneAndUpdate(
+                { _id: req.notices._id },
+                {$push: {noticeslist: req.params._id}},
                 { new: true }
             ).populate("noticeslist");
 
-            await Notice.findOneAndUpdate(
-                { _id: req.notice._id },
-                { $push: { noticeslist: req.params._id } },
-                { new: true }
-            );
+           // await Notice.findOneAndUpdate(
+           //     { _id: req.notices._id },
+           //     { $push: { noticeslist: req.params._id } },
+           //     { new: true }
+           // );
 
-            res.json({ newNotice });
+            res.json({ newnoticeslist });
         } catch (err) {
             return res.status(500).json({ msg: "notices not found" });
         }
 };
 
-const deleteProblem = async (req, res) => {
+const deleteProbleminList = async (req, res) => {
         try {
             const updatedProblemsList = await Problem.findOneAndUpdate(
                 { _id: req.params._id },
-                {$pull: { problemslist: req.problem._id }},
+                {$pull: { problemslist: req.problems._id }},
                 { new: true }).populate("problemslist");
 
             await Problem.findOneAndUpdate(
-                { _id: req.problem._id },
+                { _id: req.problems._id },
                 { $pull: { problemslist: req.params._id } },
                 { new: true }
             );
@@ -142,18 +142,16 @@ const deleteProblem = async (req, res) => {
             return res.status(500).json({ msg: "processing error occurred" });
         }
 };
-const deleteNotice = async (req, res) => {
+const deleteNoticeinList = async (req, res) => {
         try {
             const updatedNoticesList = await Notice.findOneAndUpdate(
                 { _id: req.params._id },
-                {
-                    $pull: { noticeslist: req.notice._id }
-                },
+                {$pull: { noticeslist: req.notices._id }},
                 { new: true }
             ).populate("noticeslist");
            
             await Notice.findOneAndUpdate(
-                { _id: req.notice._id },
+                { _id: req.notices._id },
                 { $pull: { noticeslist: req.params._id} },
                 { new: true }
             );
@@ -195,7 +193,7 @@ module.exports = {
     updateUser,
     UpdateProblemsList,
     UpdateNoticesList,
-    deleteProblem,
-    deleteNotice,
+    deleteProbleminList,
+    deleteNoticeinList,
     deleteUser
 };

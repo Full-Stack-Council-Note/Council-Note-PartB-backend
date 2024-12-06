@@ -10,10 +10,7 @@ const file = multer({ storage: storage })
 const getAllNotices = async (req, res) => {
     try {
         const  notices = await Notice.find().populate("user", "fullname");
-        //const problemPosts = await Notice.find().populate("user", "fullname");
-       //const problemPosts = await Notice.find().populate("AddedBy", "fullname", "-password");
-        
-                                                      //or other word?
+
         res.json( notices);
     } catch (err) {
         res.status(500).json({ message: "Error occurred finding Notice posts" });
@@ -34,26 +31,19 @@ const getNoticeById = async (req, res) => {
 
 // Add a Notice Post
 const addNotice = async (req, res) => {
-    //const { NoticeTitle, NoticeDescription} = req.body;
-    
-                                       //or User?
+
     try {
-        const { NoticeTitle, NoticeDescription, NoticePhoto} = req.body;
-        const notices = new Notice({ NoticeTitle, NoticeDescription, NoticePhoto} );
+        const { NoticeTitle, NoticeDescription} = req.body;
+       
+        const notices = new Notice({ NoticeTitle, NoticeDescription } );
+        //await Notice.create(notices);
         await notices.save();
-                            // need these {}  ?
+    
         res.json({ msg: "Notice post added successfully" });
        // const existingUser = await Users.findById(user);
       //  if (!existingUser) {
        //     return res.status(400).json({ message: "User not found" });
        // }
-        //const { problemtitle, problemdescription, UrgentOrSoon, IsResolved} = req.body;
-        
-        //const newProblem = new Problem({ problemtitle, problemdescription, user, Urgent,Soon, IsResolved }).populate("user", "fullname");
-        //await problemPost.save();
-         
-
-        //needed?
 
         // this bit needed? ! needed? Check if file exists
         //        if (!file) {
@@ -65,26 +55,27 @@ const addNotice = async (req, res) => {
                 filename: file.filename,
                 data: file.buffer,
                 contentType: file.mimetype,
-              };
-          //return res.status(400).json({ message: 'Feel free to upload a photo of the notice' });
-        }
+              }
+         }
+        
         //if (!mongoose.Types.ObjectId.isValid(User.fullname)) {
          //   return res.status(400).json({ message: "Invalid User ID" });
         //}
 
     } catch (err) {
         res.status(400).json({ message: "error occurred adding notice post" });
+        res.status(500).json({ msg: err.message });
     }
 };
 
-// Update a Notice Post
+// Update a Notice Post             NoticePhoto add back in?
 const updateNotice = async (req, res) => {
-    const { NoticeTitle, NoticeDescription, NoticePhoto } = req.body;   
+    const { NoticeTitle, NoticeDescription } = req.body;   
 
     try {
         await Notice.findOneAndUpdate(
             req.params._id,    
-            { NoticeTitle, NoticeDescription, NoticePhoto },
+            { NoticeTitle, NoticeDescription },
             { new: true }
         );
         res.json({ msg: "Notice post updated successfully." });
@@ -130,7 +121,7 @@ const getNoticesByFilter = async (req, res) => {
 };
 
 const addComment = async (req, res) => {
-    const { content, fullname } = req.body;
+    const { content, user } = req.body;
     //const { _id } = req.params;
 
     //if (!mongoose.Types.ObjectId.isValid(fullname)) {
@@ -143,7 +134,7 @@ const addComment = async (req, res) => {
             return res.status(404).json({ message: "Notice Post not found" });
         }
          //or NoticeComment (referring to schema?)
-        notices.NoticeComments.push({ content, fullname });
+        notices.NoticeComments.push({ content, user});
         await  notices.save();
 
         res.json( notices);

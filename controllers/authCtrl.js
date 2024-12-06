@@ -9,14 +9,14 @@ const authCtrl = {
 
             const passwordHash = await bcrypt.hash(password, 12);
 
-            const newUser = new User({
+            const user = new User({
                 fullname,
                 email,
                 password: passwordHash,
             });
 
-            const access_token = createAccessToken({ id: newUser._id });
-            const refresh_token = createRefreshToken({ id: newUser._id });
+            const access_token = createAccessToken({ id: user._id });
+            const refresh_token = createRefreshToken({ id: user._id });
 
             res.cookie("refreshtoken", refresh_token, {
                 httpOnly: true,
@@ -34,7 +34,7 @@ const authCtrl = {
 
             });
 
-            await newUser.save();
+            await user.save();
 
             res.json({ msg: "registered" });
             const user_email = await User.findOne({ email });
