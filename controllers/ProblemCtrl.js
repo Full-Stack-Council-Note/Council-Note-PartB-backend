@@ -101,11 +101,12 @@ const updateProblem = async (req, res) => {
 const deleteProblem = async (req, res) => {
     try {
                                                            //or :problemId  ?
-        const problems = await Problem.findByIdAndDelete(req.params._id);
-        if (problems) res.json({ message: "Problem deleted" });
-        else res.status(404).json({ message: "Problem post not found" });
+        await Problem.deleteOne(req.params._id);
+        res.json({ message: "Problem post deleted" });
+        
     } catch (err) {
         res.status(500).json({ msg: err.message });
+        res.status(404).json({ message: "Problem post not found" });
     }
 };
 const getProblemsByFilter = async (req, res) => {

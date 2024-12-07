@@ -2,10 +2,27 @@ const { User } = require("../models/userModel");
 const {Problem,ProblemComment} = require("../models/problemModel");
 const {Notice,NoticeComment} = require("../models/noticeModel");
 const multer = require('multer')
+const { v4: uuidv4 } = require('uuid');
+let path = require('path');
 
-const storage = multer.memoryStorage()
-const file = multer({ storage: storage })
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'images');
+    },
+    filename: function(req, file, cb) {   
+        cb(null, uuidv4() + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
 
+const fileFilter = (req, file, cb) => {
+    const allowedFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if(allowedFileTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
+let upload = multer({ storage, fileFilter });
     //needed?
 const searchUsers = async (req, res) => {
         try {
@@ -40,12 +57,12 @@ const getUser= async (req, res) => {
      
 };
 
-
-
 const updateUser = async (req, res) => {
         try {
-            const { fullname, about, profilephoto, ProblemsList, NoticesList } =
-                req.body;
+            const { fullname, about, ProblemsList, NoticesList } = req.body;
+            const profilephoto = (req.file);
+            upload.single('profilephoto')
+            
             //if (!fullname) {
              //   return res.status(400).json({ msg: "Please add your full name." });
             //}
@@ -54,19 +71,13 @@ const updateUser = async (req, res) => {
                 //{ _id: req.user._id },
                 //{ userId: req.user.userId },
                 { _id: req.user._id },
-                { fullname, about, profilephoto, ProblemsList, NoticesList }
+                { fullname, about, profilephoto, ProblemsList, NoticesList },
+                
                 //and PostsList or NumberofPosts
             );
 
             res.json({ msg: "Profile updated successfully." });
-            const upload = req.file;
-            if (upload) {
-                user.profilephoto = {
-                    filename: file.filename,
-                    data: file.buffer,
-                    contentType: file.mimetype,
-                };
-            }
+
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
@@ -162,30 +173,18 @@ const deleteNoticeinList = async (req, res) => {
         }
 };
 const deleteUser = async (req, res) => {
-    //const { _id, email } = req.params;
-
-    try {
-     // if (!_id) {
-     //   return res.status(400).json({ message: "User ID is required" });
-      //}
   
-      const result = await User.findByIdAndDelete(req.params._id)
-      res.json(result)
-      if (!result) {
-        return res.status(400).json({ message: "User not found" });
-      }
-  
+    try { 
+      await User.deleteOne(req.user._id)
+      res.json({ message: "User deleted successfully" });
+      
       //const result = await user.deleteOne();
     } catch (err) {
         res.status(500).json({ message: "processing error occurred" });
+        res.status(400).json({ message: "User not found" });
     }
 };
 
-//router.delete('/:id', auth, (req, res) => {
-//    Problem.findByIdAndDelete(req.params.id)
-//        .then(() => res.json('Problem deleted.'))
-//        .catch(err => res.status(400).json(`Error: ${err}`));
-//});
 
 module.exports = {
     searchUsers,

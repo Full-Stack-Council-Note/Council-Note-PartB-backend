@@ -97,11 +97,12 @@ const updateNotice = async (req, res) => {
 // Delete a Notice Post
 const deleteNotice = async (req, res) => {
     try {
-        const  notices = await Notice.findByIdAndDelete(req.params._id);
-        if ( notices) res.json({ message: "Notice deleted" });
-        else res.status(404).json({ message: "Notice post not found" });
+        await Notice.deleteOne(req.params._id);
+        res.json({ message: "Notice post deleted" });
+        
     } catch (err) {
         res.status(500).json({ message: "processing error occurred" });
+        res.status(404).json({ message: "Notice post not found" });
     }
 };
 const getNoticesByFilter = async (req, res) => {

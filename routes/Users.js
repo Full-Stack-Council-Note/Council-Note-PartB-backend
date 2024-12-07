@@ -23,7 +23,7 @@ router.patch("/:id/UpdateProblemsList", auth, UpdateProblemsList);
 router.patch("/:id/UpdateNoticesList", auth,  UpdateNoticesList);
 router.delete("/:id/deleteProbleminList", auth,  deleteProbleminList);
 router.delete("/:id/deleteNoticeinList", auth,  deleteNoticeinList);
-router.delete("/:id/deleteUser", auth, deleteUser);
+router.delete("/:id/", auth, deleteUser);
 
       //or patch
 module.exports = router;

@@ -58,8 +58,6 @@ app.use('/notices', NoticesRouter);
 const ProblemsRouter = require('./routes/Problems');
 app.use('/problems', ProblemsRouter);
 
-//const UserProfilesRouter = require('./routes/UserProfiles');
-//app.use('/userprofiles', UserProfilesRouter);
 
 //dotenv.config({ path: 'ENV_FILENAME' });
 app.use((error, req, res, next) => {
