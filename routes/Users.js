@@ -15,7 +15,7 @@ const {
                     //auth, adminOnly
 router.get('/searchUsers', auth, searchUsers);
 //auth, adminOnly
-router.get('/:id/', auth, getUser);
+router.get('/:id/MyProfile', auth, getUser);
 
 router.patch("/:id/updateUser", auth, updateUser);
 
