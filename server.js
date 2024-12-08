@@ -27,7 +27,7 @@ const path = require('path');
 //}
 require('dotenv').config();
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5173;
                                // or http://localhost:5173/
                                //   http://localhost:5000/
 //app.use(cors());
@@ -39,7 +39,7 @@ app.use('/', express.static(path.join(__dirname, '/public')))
 
 //const apiRouter = require('./routes/api');
 //app.use('/api', apiRouter);
-app.get("/", (req, res) => {
+app.get("/home", (req, res) => {
 	res.status(200).json({
 		message:'Welcome to CouncilNote'
 	});

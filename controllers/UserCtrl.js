@@ -60,7 +60,7 @@ const getUser= async (req, res) => {
 const updateUser = async (req, res) => {
         try {
             const { fullname, about, ProblemsList, NoticesList } = req.body;
-            const profilephoto = (req.file);
+            const profilephoto = req.file;
             upload.single('profilephoto')
             
             //if (!fullname) {

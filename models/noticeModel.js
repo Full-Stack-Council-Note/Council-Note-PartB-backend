@@ -14,9 +14,7 @@ const NoticeSchema = new mongoose.Schema({
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     DateAdded: { type: Date, default: Date.now },
     NoticePhoto: {
-        data: Buffer,
-        contentType: String,
-        filename: String,
+        type: String,
 
     },
     NoticeComments:  [NoticeCommentSchema ]

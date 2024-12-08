@@ -20,13 +20,13 @@ router.get('/', auth, getAllNotices);
 router.get('/:id/', auth, getNoticeById);
 
 // Create a new article
-router.post('/', auth, addNotice);
+router.post('/addNotice', auth, addNotice);
 
 // Update an article
-router.patch('/:id/', auth, updateNotice);
+router.patch('/:id/updateNotice', auth, updateNotice);
 
 // Delete an article Maybe on User profile page?
-router.delete('/:id/', auth, deleteNotice);
+router.delete('/:id/deleteNotice', auth, deleteNotice);
 
 //filterout with category
 router.get('/filter', auth, getNoticesByFilter);

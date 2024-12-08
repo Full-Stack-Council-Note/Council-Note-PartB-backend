@@ -2,9 +2,27 @@ const mongoose = require("mongoose");
 const {Notice, NoticeComment} = require("../models/noticeModel");
 const {User} = require("../models/userModel");
 const multer = require('multer')
+const { v4: uuidv4 } = require('uuid');
+let path = require('path');
 
-const storage = multer.memoryStorage()
-const file = multer({ storage: storage })
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'images');
+    },
+    filename: function(req, file, cb) {   
+        cb(null, uuidv4() + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    const allowedFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if(allowedFileTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
+let upload = multer({ storage, fileFilter });
 
 // Get all Notice posts
 const getAllNotices = async (req, res) => {
@@ -34,8 +52,9 @@ const addNotice = async (req, res) => {
 
     try {
         const { NoticeTitle, NoticeDescription} = req.body;
-       
-        const notices = new Notice({ NoticeTitle, NoticeDescription } );
+        const NoticePhoto = req.file
+        upload.single('NoticePhoto')
+        const notices = new Notice({ NoticeTitle, NoticeDescription, NoticePhoto } );
         //await Notice.create(notices);
         await notices.save();
     
@@ -44,19 +63,6 @@ const addNotice = async (req, res) => {
       //  if (!existingUser) {
        //     return res.status(400).json({ message: "User not found" });
        // }
-
-        // this bit needed? ! needed? Check if file exists
-        //        if (!file) {
-        //    return res.status(400).json({ message: 'Feel free to upload a photo of the notice' });
-        //}
-        const upload = req.file;
-        if (upload) {
-            NoticePhoto = {
-                filename: file.filename,
-                data: file.buffer,
-                contentType: file.mimetype,
-              }
-         }
         
         //if (!mongoose.Types.ObjectId.isValid(User.fullname)) {
          //   return res.status(400).json({ message: "Invalid User ID" });
@@ -70,24 +76,20 @@ const addNotice = async (req, res) => {
 
 // Update a Notice Post             NoticePhoto add back in?
 const updateNotice = async (req, res) => {
-    const { NoticeTitle, NoticeDescription } = req.body;   
-
+  
     try {
+        const { NoticeTitle, NoticeDescription } = req.body; 
+        const NoticePhoto = req.file
+        upload.single('NoticePhoto')  
+
         await Notice.findOneAndUpdate(
             req.params._id,    
-            { NoticeTitle, NoticeDescription },
+            { NoticeTitle, NoticeDescription, NoticePhoto },
             { new: true }
         );
         res.json({ msg: "Notice post updated successfully." });
        
-        const upload = req.file;
-        if (upload) {
-            NoticePhoto = {
-                filename: file.filename,
-                data: file.buffer,
-                contentType: file.mimetype,
-            };
-          }
+
     } catch (err) {
         res.status(400).json({ message: "error occurred updating notice post" });
         res.status(404).json({ message: "Notice post not found" });

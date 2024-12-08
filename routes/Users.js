@@ -17,13 +17,13 @@ router.get('/searchUsers', auth, searchUsers);
 //auth, adminOnly
 router.get('/:id/', auth, getUser);
 
-router.patch("/:id/", auth, updateUser);
+router.patch("/:id/updateUser", auth, updateUser);
 
 router.patch("/:id/UpdateProblemsList", auth, UpdateProblemsList);
 router.patch("/:id/UpdateNoticesList", auth,  UpdateNoticesList);
 router.delete("/:id/deleteProbleminList", auth,  deleteProbleminList);
 router.delete("/:id/deleteNoticeinList", auth,  deleteNoticeinList);
-router.delete("/:id/", auth, deleteUser);
+router.delete("/:id/deleteUser", auth, deleteUser);
 
       //or patch
 module.exports = router;

@@ -2,9 +2,27 @@ const mongoose = require("mongoose");
 const {Problem,ProblemComment} = require("../models/problemModel");
 const {User} = require("../models/userModel");
 const multer = require('multer')
+const { v4: uuidv4 } = require('uuid');
+let path = require('path');
 
-const storage = multer.memoryStorage()
-const file = multer({ storage: storage })
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'images');
+    },
+    filename: function(req, file, cb) {   
+        cb(null, uuidv4() + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    const allowedFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if(allowedFileTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
+let upload = multer({ storage, fileFilter });
 
 // Get all Problem posts
 const getAllProblems = async (req, res) => {
@@ -45,20 +63,14 @@ const addProblem = async (req, res) => {
 
     try {
         const { problemtitle, problemdescription, UrgentOrSoon, IsResolved } = req.body;
-        const problems = new Problem({ problemtitle, problemdescription, UrgentOrSoon, IsResolved });
+        const problemphoto= req.file;
+        upload.single('problemphoto')
+        const problems = new Problem({ problemtitle, problemdescription, UrgentOrSoon, IsResolved, problemphoto });
+       
         await problems.save();
    
         res.json({ msg: "Problem post added successfully" });
-       
-        const upload = req.file;
-        if (upload) {
-            problems.problemphoto = {
-                filename: file.filename,
-                data: file.buffer,
-                contentType: file.mimetype,
-              };
-          
-        }
+    
 
     } catch (err) {
         res.status(400).json({ message: "error occurred adding problem post" });
@@ -69,26 +81,20 @@ const addProblem = async (req, res) => {
 // Update a Problem Post
 const updateProblem = async (req, res) => {
                                                                //problemphoto  put back?
-    const { problemtitle, problemdescription, UrgentOrSoon, IsResolved } = req.body;
-    
 
     try {
+        const { problemtitle, problemdescription, UrgentOrSoon, IsResolved } = req.body;
+        const problemphoto= req.file;
+        upload.single('problemphoto')
         await Problem.findOneAndUpdate(
                                                                    //problemphoto  put back?
             req.params._id,        
-            { problemtitle, problemdescription, UrgentOrSoon, IsResolved },
+            { problemtitle, problemdescription, UrgentOrSoon, IsResolved, problemphoto },
             { new: true }
         );
         res.json({ msg: "Problem post updated successfully." });
         
-        const upload = req.file;
-        if (upload) {
-            problemphoto = {
-                filename: file.filename,
-                data: file.buffer,
-                contentType: file.mimetype,
-            };
-          }
+  
     } catch (err) {
         res.status(404).json({ message: "Problem post not found" });
         res.status(400).json({ message: "error occurred updating problem post" });

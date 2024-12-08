@@ -23,15 +23,15 @@ router.get('/:id/', auth, getProblemById);
 
 // Add a problem post
 //add back in auth, adminOnly,
-router.post('/', auth, addProblem);
+router.post('/addProblem', auth, addProblem);
 
 // Update a problem post
 //auth, adminOnly,
-router.patch('/:id/', auth, updateProblem);
+router.patch('/:id/updateProblem', auth, updateProblem);
 
 // Delete a problem post
 //auth, adminOnly,
-router.delete('/:id/', auth, deleteProblem);
+router.delete('/:id/deleteProblem', auth, deleteProblem);
 
 //filterout with category
 router.get('/filter', auth, getProblemsByFilter);

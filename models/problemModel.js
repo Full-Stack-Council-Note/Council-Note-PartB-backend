@@ -20,9 +20,7 @@ const ProblemSchema = new mongoose.Schema({
     UrgentOrSoon: {type: String, enum: ['Urgent', 'Soon','N/A'], default: 'N/A'},
     IsResolved: {type: Boolean},
     problemphoto: {
-        data: Buffer,
-        contentType: String,
-        filename: String,
+        type: String,
  
     },
     ProblemComments: [ProblemCommentSchema],  //Immediate Problem to be solved in next 24 hours? yes or no
