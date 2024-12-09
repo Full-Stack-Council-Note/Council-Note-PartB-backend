@@ -6,8 +6,8 @@ const authCtrl = require('../controllers/authCtrl');
 router.post('/register', authCtrl.register);
 router.post("/register_admin", authCtrl.registerAdmin);
 router.post("/changePassword", authCtrl.changePassword);
-
-router.post("/login", authCtrl.login);
+///auth/loginfm
+router.post("/loginfm", authCtrl.loginfm);
 router.post("/admin_login", authCtrl.adminLogin);
 
 router.post("/logout", authCtrl.logout);

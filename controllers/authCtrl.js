@@ -120,7 +120,7 @@ const authCtrl = {
         }
     },
 
-    login: async (req, res) => {
+    loginfm: async (req, res) => {
         try {
             const { email, password } = req.body;
 
