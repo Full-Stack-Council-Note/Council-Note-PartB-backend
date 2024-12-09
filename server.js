@@ -13,7 +13,11 @@ const path = require('path');
 //	origin: '*',
 //	optionsSuccessStatus: 200
 //};
-
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true
+}));
 
 //app.use(cors(corsOptions));
 //const errorHandler = require('./middleware/errorHandler')
@@ -39,7 +43,7 @@ app.use('/', express.static(path.join(__dirname, '/public')))
 
 //const apiRouter = require('./routes/api');
 //app.use('/api', apiRouter);
-app.get("/home", (req, res) => {
+app.get("/", (req, res) => {
 	res.status(200).json({
 		message:'Welcome to CouncilNote'
 	});
