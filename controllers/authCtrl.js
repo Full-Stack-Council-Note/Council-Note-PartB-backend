@@ -15,7 +15,7 @@ const authCtrl = {
                 password: passwordHash,
             });
 
-            const access_token = createAccessToken({ id: user._id });
+            const token = createToken({ id: user._id });
             const refresh_token = createRefreshToken({ id: user._id });
 
             res.cookie("refreshtoken", refresh_token, {
@@ -26,7 +26,7 @@ const authCtrl = {
 
             res.json({
                 msg: "Registered Successfully!",
-                access_token,
+                token,
                 user: {
                     ...user._doc,
                     password: "",
@@ -138,7 +138,7 @@ const authCtrl = {
                 return res.status(400).json({ msg: "Email or Password is incorrect." });
             }
 
-            const access_token = createAccessToken({ id: user._id });
+            const token = createToken({ id: user._id });
             const refresh_token = createRefreshToken({ id: user._id });
 
             res.cookie("refreshtoken", refresh_token, {
@@ -151,7 +151,7 @@ const authCtrl = {
 
             res.json({
                 msg: "Logged in  Successfully!",
-                access_token,
+                token,
                 user: {
                     ...user._doc,
                     password: "",
@@ -178,7 +178,7 @@ const authCtrl = {
                 return res.status(400).json({ msg: "Email or Password is incorrect." });
             }
 
-            const access_token = createAccessToken({ id: user._id });
+            const token = createToken({ id: user._id });
             const refresh_token = createRefreshToken({ id: user._id });
 
             res.cookie("refreshtoken", refresh_token, {
@@ -189,7 +189,7 @@ const authCtrl = {
 
             res.json({
                 msg: "Logged in  Successfully!",
-                access_token,
+                token,
                 user: {
                     ...user._doc,
                     password: "",
@@ -232,8 +232,8 @@ const authCtrl = {
                         return res.status(400).json({ msg: "User does not exist." });
                     }
 
-                    const access_token = createAccessToken({ id: result._id });
-                    res.json({ access_token, user });
+                    const token = createToken({ id: result._id });
+                    res.json({ token, user });
                 }
             );
         } catch (err) {
@@ -242,7 +242,7 @@ const authCtrl = {
     },
 };
 
-const createAccessToken = (payload) => {
+const createToken = (payload) => {
     return jwt.sign(payload, "AAAA", {
         expiresIn: "30d",
     });

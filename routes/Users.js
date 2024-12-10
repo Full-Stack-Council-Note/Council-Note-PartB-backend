@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const {auth, adminOnly} = require('../middleware/authMiddleware');
 const {
-    searchUsers,
+    searchpeople,
     getUser,
     updateUser,
     UpdateProblemsList,
@@ -13,17 +13,17 @@ const {
 } = require('../controllers/UserCtrl');
 //const userCtrl = require('../controllers/UserCtrl');
                     //auth, adminOnly
-router.get('/searchUsers', auth, searchUsers);
+router.get('/searchpeople', auth, searchpeople);
 //auth, adminOnly
-router.get('/:id/', auth, getUser);
+router.get('/:id/cnprofile', auth, getUser);
 
-router.patch("/:id/updateUser", auth, updateUser);
+router.patch("/:id/cnprofile/updateUser", auth, updateUser);
 
-router.patch("/:id/UpdateProblemsList", auth, UpdateProblemsList);
-router.patch("/:id/UpdateNoticesList", auth,  UpdateNoticesList);
-router.delete("/:id/deleteProbleminList", auth,  deleteProbleminList);
-router.delete("/:id/deleteNoticeinList", auth,  deleteNoticeinList);
-router.delete("/:id/deleteUser", auth, deleteUser);
+router.patch("/:id/cnprofile/UpdateProblemsList", auth, UpdateProblemsList);
+router.patch("/:id/cnprofile/UpdateNoticesList", auth,  UpdateNoticesList);
+router.delete("/:id/cnprofile/deleteProbleminList", auth,  deleteProbleminList);
+router.delete("/:id/cnprofile/deleteNoticeinList", auth,  deleteNoticeinList);
+router.delete("/:id/cnprofile/deleteUser", auth, deleteUser);
 
       //or patch
 module.exports = router;

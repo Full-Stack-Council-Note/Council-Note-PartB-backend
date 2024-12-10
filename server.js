@@ -13,11 +13,11 @@ const path = require('path');
 //	origin: '*',
 //	optionsSuccessStatus: 200
 //};
-app.use(cors({
-    origin: ["http://localhost:5173"],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    credentials: true
-}));
+//app.use(cors({
+ //   origin: ["http://localhost:5173"],
+ //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  //  credentials: true
+//}));
 
 //app.use(cors(corsOptions));
 //const errorHandler = require('./middleware/errorHandler')
@@ -31,7 +31,7 @@ app.use(cors({
 //}
 require('dotenv').config();
 const app = express();
-const PORT = process.env.PORT || 5173;
+const PORT = process.env.PORT || 4173;
                                // or http://localhost:5173/
                                //   http://localhost:5000/
 //app.use(cors());

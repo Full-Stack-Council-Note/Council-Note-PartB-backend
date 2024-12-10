@@ -24,7 +24,7 @@ const fileFilter = (req, file, cb) => {
 }
 let upload = multer({ storage, fileFilter });
     //needed?
-const searchUsers = async (req, res) => {
+const searchpeople = async (req, res) => {
         try {
             const users = await User.find().select('-password')
  
@@ -187,7 +187,7 @@ const deleteUser = async (req, res) => {
 
 
 module.exports = {
-    searchUsers,
+    searchpeople,
     getUser,
     updateUser,
     UpdateProblemsList,
