@@ -14,9 +14,9 @@ const path = require('path');
 //	optionsSuccessStatus: 200
 //};
 //app.use(cors({
- //   origin: ["http://localhost:5173"],
+//    origin: ["http://localhost:8080"],
  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  //  credentials: true
+//   credentials: true
 //}));
 
 //app.use(cors(corsOptions));
@@ -31,7 +31,7 @@ const path = require('path');
 //}
 require('dotenv').config();
 const app = express();
-const PORT = process.env.PORT || 4173;
+const PORT = process.env.PORT || 8080;
                                // or http://localhost:5173/
                                //   http://localhost:5000/
 //app.use(cors());

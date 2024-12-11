@@ -15,15 +15,15 @@ const {
                     //auth, adminOnly
 router.get('/searchpeople', auth, searchpeople);
 //auth, adminOnly
-router.get('/:id/cnprofile', auth, getUser);
+router.get('/:id/profile', auth, getUser);
 
-router.patch("/:id/cnprofile/updateUser", auth, updateUser);
+router.patch("/:id/profile/updateUser", auth, updateUser);
 
-router.patch("/:id/cnprofile/UpdateProblemsList", auth, UpdateProblemsList);
-router.patch("/:id/cnprofile/UpdateNoticesList", auth,  UpdateNoticesList);
-router.delete("/:id/cnprofile/deleteProbleminList", auth,  deleteProbleminList);
-router.delete("/:id/cnprofile/deleteNoticeinList", auth,  deleteNoticeinList);
-router.delete("/:id/cnprofile/deleteUser", auth, deleteUser);
+router.patch("/:id/profile/UpdateProblemsList", auth, UpdateProblemsList);
+router.patch("/:id/profile/UpdateNoticesList", auth,  UpdateNoticesList);
+router.delete("/:id/profile/deleteProbleminList", auth,  deleteProbleminList);
+router.delete("/:id/profile/deleteNoticeinList", auth,  deleteNoticeinList);
+router.delete("/:id/profile/deleteUser", auth, deleteUser);
 
       //or patch
 module.exports = router;
