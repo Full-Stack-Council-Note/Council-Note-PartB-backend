@@ -13,19 +13,15 @@ const {
     deleteComment
 } = require('../controllers/NoticeCtrl');
 
-// Get all articles
-router.get('/', auth, getAllNotices);
+// put back auth
+router.get('/', getAllNotices);
 
-// Get a specific article by ID
 router.get('/:id/', auth, getNoticeById);
 
-// Create a new article
 router.post('/addNotice', auth, addNotice);
 
-// Update an article
 router.patch('/:id/updateNotice', auth, updateNotice);
 
-// Delete an article Maybe on User profile page?
 router.delete('/:id/deleteNotice', auth, deleteNotice);
 
 //filterout with category

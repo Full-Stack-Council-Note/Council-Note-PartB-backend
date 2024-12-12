@@ -15,16 +15,3 @@ router.post("/logout", authCtrl.logout);
 router.post("/refresh_token", authCtrl.generateAccessToken);
 
 module.exports = router;
-
-
-
-//needed?
-//const express = require('express')
-//const router = express.Router()
-//const path = require('path')
-
-//router.get('^/$|/index(.html)?', (req, res) => {
-//    res.sendFile(path.join(__dirname, '..', 'views', 'index.html'))
-//})
-
-//module.exports = router

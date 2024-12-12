@@ -13,11 +13,11 @@ const path = require('path');
 //	origin: '*',
 //	optionsSuccessStatus: 200
 //};
-//app.use(cors({
-//    origin: ["http://localhost:8080"],
- //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-//   credentials: true
-//}));
+app.use(cors({
+    origin: ["http://localhost:8080"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+   credentials: true
+}));
 
 //app.use(cors(corsOptions));
 //const errorHandler = require('./middleware/errorHandler')
@@ -38,8 +38,11 @@ const PORT = process.env.PORT || 8080;
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.json());
+
 app.use('/', express.static(path.join(__dirname, '/public')))
 //app.use(errorHandler)
+app.use('/images', express.static(path.join(__dirname, '/images')));
+
 
 //const apiRouter = require('./routes/api');
 //app.use('/api', apiRouter);
@@ -88,7 +91,6 @@ app.use((error, req, res, next) => {
 //.then(() => app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`)))
 //.catch((error) => console.log(error.message)) 
 //mongoose.set('useFindAndModify', false)
-
 
 mongoose.connect( process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/councilnote',
    { useNewUrlParser: true, useUnifiedTopology: true });

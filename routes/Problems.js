@@ -15,7 +15,7 @@ const {
 
 // Get all problem posts
 //auth, adminOnly,
-router.get('/', auth, getAllProblems);
+router.get('/', getAllProblems);
 
 // Get a specific problem post by ID
 //add back in auth, adminOnly,
