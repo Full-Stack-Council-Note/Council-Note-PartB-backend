@@ -74,16 +74,16 @@ app.use((error, req, res, next) => {
     });
 });
 
-//needed?
-//app.all('*', (req, res) => {
-  //  res.status(404)
-  //  if (req.accepts('html')) {
-  //      res.sendFile(path.join(__dirname, 'views', 'notFound.html'))
-  //  } else if (req.accepts('json')) {
-  //      res.json({ error: 'Not found' })
-  //  } else {
-   //     res.type('txt').send('404 Not Found')
-  //  }})
+//use CN logo??
+app.all('*', (req, res) => {
+    res.status(404)
+    if (req.accepts('html')) {
+        res.sendFile(path.join(__dirname, 'views', 'index.html'))
+    } else if (req.accepts('json')) {
+        res.json({ error: 'Not found' })
+    } else {
+        res.type('txt').send('404 Not Found')
+    }})
 
 // MongoDB connection
 //const uri = process.env.MONGO_URI
