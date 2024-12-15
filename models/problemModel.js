@@ -24,9 +24,7 @@ const ProblemSchema = new mongoose.Schema({
  
     },
     ProblemComments: [ProblemCommentSchema],  //Immediate Problem to be solved in next 24 hours? yes or no
-    //ImageUpload?
-    // UrgentProblem: {type: Boolean},
-   // SoonProblem: {type: Boolean},
+  
    //    WorkcrewOnWay: {type: Boolean},
     //WorkcrewAtSite: {type: Boolean},
 });

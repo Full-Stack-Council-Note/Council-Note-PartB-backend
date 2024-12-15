@@ -27,10 +27,6 @@ let upload = multer({ storage, fileFilter });
 const searchpeople = async (req, res) => {
         try {
             const users = await User.find().select('-password')
- 
-            //const users = await User.find({
-             //   fullname: { $regex: req.query.user.fullname },
-            //})
             //    .limit(50)
             //    .select("fullname");
 
@@ -44,7 +40,6 @@ const getUser= async (req, res) => {
 
        try {
            const user = await User.findOne( req.params._id).select("-password")
-        //.select("-password")
         //.populate("problemslist noticeslist", "-password");
             res.json( {user} );
 
@@ -98,11 +93,6 @@ const UpdateProblemsList = async (req, res) => {
                 { new: true }
             ).populate("problemslist");
 
-            //await Problem.findOneAndUpdate(
-             //   { _id: req.problems._id },
-            //    { $push: { problemslist: req.params._id} },
-           //     { new: true }
-           // );
 
             res.json({ newproblemslist });
         } catch (err) {

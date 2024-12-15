@@ -18,7 +18,7 @@ const NoticeSchema = new mongoose.Schema({
 
     },
     NoticeComments:  [NoticeCommentSchema ]
-    //ImageUpload? refer to Pet example?
+    
 });
 
 const Notice = mongoose.model('Notice', NoticeSchema);
