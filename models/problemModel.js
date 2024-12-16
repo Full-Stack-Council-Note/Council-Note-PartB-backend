@@ -17,7 +17,7 @@ const ProblemSchema = new mongoose.Schema({
                                             // turn back on , required: true   (for below)
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     DateAdded: { type: Date, default: Date.now },
-    UrgentOrSoon: {type: String, enum: ['Urgent', 'Soon','N/A'], default: 'N/A'},
+    UrgentOrSoon: {type: String, enum: ['Urgent', 'Soon', 'N/A'], default: 'N/A'},
     IsResolved: {type: Boolean},
     problemphoto: {
         type: String,

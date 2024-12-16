@@ -39,8 +39,7 @@ const searchpeople = async (req, res) => {
 const getUser= async (req, res) => {
 
        try {
-           const user = await User.findOne( req.params._id).select("-password")
-        //.populate("problemslist noticeslist", "-password");
+           const user = await User.findOne( req.params._id).select("-password").populate("problemslist", "noticeslist");
             res.json( {user} );
 
         //if (!user) {
