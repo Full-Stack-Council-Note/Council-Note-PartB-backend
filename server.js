@@ -50,7 +50,7 @@ app.get("/", (req, res) => {
 	res.status(200).json({
 		message:'Welcome to CouncilNote'
 	});
-    res.sendFile(path.join(__dirname, 'views', 'index.html'))
+    
 });
 
 const AuthRouter = require('./routes/Auth');
