@@ -38,7 +38,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.json());
 
-app.use('/', express.static(path.join(__dirname, '/public')))
+//app.use('/', express.static(path.join(__dirname, '/public')))
 //app.use(errorHandler)
 app.use('/images', express.static(path.join(__dirname, '/images')));
 
@@ -49,6 +49,7 @@ app.get("/", (req, res) => {
 	res.status(200).json({
 		message:'Welcome to CouncilNote'
 	});
+    res.sendFile(path.join(__dirname, 'views', 'index.html'))
 });
 
 const AuthRouter = require('./routes/Auth');
